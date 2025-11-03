@@ -2,7 +2,9 @@ package main;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import entity.domain.*;
@@ -13,6 +15,8 @@ import util.IdGenerator;
 
 /**
  * Text-based interactive UI for Students, Company Reps, and Staff.
+ * Adds per-user saved filters (Status, Preferred Major, Level, Closing Date)
+ * with default alphabetical sorting by Title.
  */
 public class ConsoleUI {
     private final Scanner sc = new Scanner(System.in);
@@ -28,6 +32,12 @@ public class ConsoleUI {
     private final ApplicationRepository appRepo;
     private final RequestRepository reqRepo;
     private final IdGenerator ids;
+
+    // per-session, per-user saved filters
+    private final Map<String, OpportunityFilter> userFilters = new HashMap<>();
+    private OpportunityFilter getFilterFor(String userId) {
+        return userFilters.computeIfAbsent(userId, k -> new OpportunityFilter());
+    }
 
     public ConsoleUI(AuthService auth, UserService users, OpportunityService oppSvc,
                      ApplicationService appSvc, ReportService reportSvc,
@@ -49,14 +59,13 @@ public class ConsoleUI {
         while (true) {
             System.out.println("\n=== Internship Placement System ===");
             System.out.println("1) Login");
-            System.out.println("2) First-time setup (set password)"); // NEW
-            System.out.println("3) List sample users (IDs)");
+            System.out.println("2) First-time setup (set password)");
             System.out.println("0) Exit");
             System.out.print("Choice: ");
             int choice = readInt();
             switch (choice) {
                 case 1 -> doLogin();
-                case 2 -> firstTimeSetup();  //listSampleUsers();
+                case 2 -> firstTimeSetup();
                 case 0 -> { return; }
                 default -> System.out.println("Invalid choice.");
             }
@@ -80,14 +89,6 @@ public class ConsoleUI {
         }
     }
 
-    /*private void listSampleUsers() {
-        System.out.println("--- Users ---");
-        for (User u : userRepo.findAll()) {
-            System.out.printf("ID=%s | username=%s | type=%s%n",
-                    u.getUserId(), u.getUserName(), u.getClass().getSimpleName());
-        }
-    }*/
-
     // ===================== Student =====================
     private void studentMenu(Student s) {
         while (true) {
@@ -97,6 +98,7 @@ public class ConsoleUI {
             System.out.println("3) View my applications");
             System.out.println("4) Accept successful application");
             System.out.println("5) Request withdrawal");
+            System.out.println("6) Set filters / sort"); // NEW
             System.out.println("0) Logout");
             System.out.print("Choice: ");
             switch (readInt()) {
@@ -105,6 +107,7 @@ public class ConsoleUI {
                 case 3 -> studentViewApps(s);
                 case 4 -> studentAccept(s);
                 case 5 -> studentRequestWithdrawal(s);
+                case 6 -> editFiltersStudent(s);
                 case 0 -> { return; }
                 default -> System.out.println("Invalid choice.");
             }
@@ -112,17 +115,21 @@ public class ConsoleUI {
     }
 
     private void studentViewEligible(Student s) {
-        List<InternshipOpportunity> list = oppSvc.listVisibleFor(s);
+        OpportunityFilter f = getFilterFor(s.getUserId());
+        List<InternshipOpportunity> list = oppSvc.listVisibleFor(s, f); // filtered + sorted (default TITLE_ASC)
         if (list.isEmpty()) {
             System.out.println("No visible/eligible opportunities right now.");
             return;
         }
+        printFilterSummary(f);
         printOpps(list);
     }
 
     private void studentApply(Student s) {
-        List<InternshipOpportunity> list = oppSvc.listVisibleFor(s);
+        OpportunityFilter f = getFilterFor(s.getUserId());
+        List<InternshipOpportunity> list = oppSvc.listVisibleFor(s, f);
         if (list.isEmpty()) { System.out.println("No opportunities available."); return; }
+        printFilterSummary(f);
         printOpps(list);
         System.out.print("Enter Opportunity ID to apply: ");
         String oid = sc.nextLine().trim();
@@ -185,6 +192,54 @@ public class ConsoleUI {
         }
     }
 
+    private void editFiltersStudent(Student s) {
+        OpportunityFilter f = getFilterFor(s.getUserId());
+        while (true) {
+            System.out.println("\n--- Filters (Student) ---");
+            System.out.println("1) Status (current: " + f.getStatus() + ")");
+            System.out.println("2) Preferred Major (current: " + f.getPreferredMajor() + ")");
+            System.out.println("3) Level (current: " + f.getLevel() + ")");
+            System.out.println("4) Closing on/before (YYYY-MM-DD) (current: " + f.getClosingBefore() + ")");
+            System.out.println("5) Sort (TITLE_ASC, CLOSING_DATE_ASC, COMPANY_ASC, LEVEL_ASC) (current: " + f.getSortKey() + ")");
+            System.out.println("6) Clear all");
+            System.out.println("0) Back");
+            System.out.print("Choice: ");
+            switch (readInt()) {
+                case 1 -> {
+                    System.out.print("Enter Status or blank: ");
+                    String s1 = sc.nextLine().trim();
+                    f.setStatus(s1.isBlank() ? null : OpportunityStatus.valueOf(s1.toUpperCase()));
+                }
+                case 2 -> {
+                    System.out.print("Preferred Major (blank=any): ");
+                    f.setPreferredMajor(sc.nextLine().trim());
+                }
+                case 3 -> {
+                    System.out.print("Level (BASIC/INTERMEDIATE/ADVANCED or blank): ");
+                    String lv = sc.nextLine().trim();
+                    f.setLevel(lv.isBlank() ? null : InternshipLevel.valueOf(lv.toUpperCase()));
+                }
+                case 4 -> {
+                    System.out.print("Closing on/before (YYYY-MM-DD or blank): ");
+                    String d = sc.nextLine().trim();
+                    f.setClosingBefore(d.isBlank() ? null : LocalDate.parse(d));
+                }
+                case 5 -> {
+                    System.out.print("Sort: ");
+                    String sk = sc.nextLine().trim();
+                    if (!sk.isBlank()) f.setSortKey(OpportunityFilter.SortKey.valueOf(sk.toUpperCase()));
+                }
+                case 6 -> {
+                    userFilters.put(s.getUserId(), new OpportunityFilter());
+                    System.out.println("Filters cleared.");
+                    return;
+                }
+                case 0 -> { return; }
+                default -> System.out.println("Invalid choice.");
+            }
+        }
+    }
+
     // ===================== Company Rep =====================
     private void repMenu(CompanyRepresentative rep) {
         if (!rep.isApproved()) {
@@ -197,6 +252,7 @@ public class ConsoleUI {
             System.out.println("2) List my opportunities");
             System.out.println("3) Toggle visibility");
             System.out.println("4) Review applications for an opportunity");
+            System.out.println("5) Set filters / sort"); // NEW
             System.out.println("0) Logout");
             System.out.print("Choice: ");
             switch (readInt()) {
@@ -204,6 +260,7 @@ public class ConsoleUI {
                 case 2 -> repListOpps(rep);
                 case 3 -> repToggleVisibility(rep);
                 case 4 -> repReviewApps(rep);
+                case 5 -> editFiltersRep(rep);
                 case 0 -> { return; }
                 default -> System.out.println("Invalid choice.");
             }
@@ -215,7 +272,8 @@ public class ConsoleUI {
         System.out.print("Title: "); String title = sc.nextLine().trim();
         System.out.print("Description: "); String desc = sc.nextLine().trim();
         System.out.print("Preferred Major (blank=any): "); String major = sc.nextLine().trim();
-        System.out.print("Level (BASIC/INTERMEDIATE/ADVANCED): "); InternshipLevel lvl = InternshipLevel.valueOf(sc.nextLine().trim().toUpperCase());
+        System.out.print("Level (BASIC/INTERMEDIATE/ADVANCED): ");
+        InternshipLevel lvl = InternshipLevel.valueOf(sc.nextLine().trim().toUpperCase());
         System.out.print("Slots (<=10): "); int slots = readInt();
 
         String id = ids.newId("O");
@@ -227,8 +285,10 @@ public class ConsoleUI {
     }
 
     private void repListOpps(CompanyRepresentative rep) {
-        List<InternshipOpportunity> list = oppRepo.findByCompany(rep.getCompanyName());
+        OpportunityFilter f = getFilterFor(rep.getUserId());
+        List<InternshipOpportunity> list = oppSvc.listByCompanyFiltered(rep.getCompanyName(), f);
         if (list.isEmpty()) { System.out.println("No opportunities yet."); return; }
+        printFilterSummary(f);
         printOpps(list);
     }
 
@@ -273,6 +333,54 @@ public class ConsoleUI {
         oppRepo.save(opp);
     }
 
+    private void editFiltersRep(CompanyRepresentative rep) {
+        OpportunityFilter f = getFilterFor(rep.getUserId());
+        while (true) {
+            System.out.println("\n--- Filters (Company Rep) ---");
+            System.out.println("1) Status (current: " + f.getStatus() + ")");
+            System.out.println("2) Preferred Major (current: " + f.getPreferredMajor() + ")");
+            System.out.println("3) Level (current: " + f.getLevel() + ")");
+            System.out.println("4) Closing on/before (current: " + f.getClosingBefore() + ")");
+            System.out.println("5) Sort (current: " + f.getSortKey() + ")");
+            System.out.println("6) Clear all");
+            System.out.println("0) Back");
+            System.out.print("Choice: ");
+            switch (readInt()) {
+                case 1 -> {
+                    System.out.print("Status or blank: ");
+                    String s1 = sc.nextLine().trim();
+                    f.setStatus(s1.isBlank() ? null : OpportunityStatus.valueOf(s1.toUpperCase()));
+                }
+                case 2 -> {
+                    System.out.print("Preferred Major (blank=any): ");
+                    f.setPreferredMajor(sc.nextLine().trim());
+                }
+                case 3 -> {
+                    System.out.print("Level (BASIC/INTERMEDIATE/ADVANCED or blank): ");
+                    String lv = sc.nextLine().trim();
+                    f.setLevel(lv.isBlank() ? null : InternshipLevel.valueOf(lv.toUpperCase()));
+                }
+                case 4 -> {
+                    System.out.print("Closing on/before (YYYY-MM-DD or blank): ");
+                    String d = sc.nextLine().trim();
+                    f.setClosingBefore(d.isBlank() ? null : LocalDate.parse(d));
+                }
+                case 5 -> {
+                    System.out.print("Sort: ");
+                    String sk = sc.nextLine().trim();
+                    if (!sk.isBlank()) f.setSortKey(OpportunityFilter.SortKey.valueOf(sk.toUpperCase()));
+                }
+                case 6 -> {
+                    userFilters.put(rep.getUserId(), new OpportunityFilter());
+                    System.out.println("Filters cleared.");
+                    return;
+                }
+                case 0 -> { return; }
+                default -> System.out.println("Invalid choice.");
+            }
+        }
+    }
+
     // ===================== Staff =====================
     private void staffMenu(CareerCenterStaff staff) {
         while (true) {
@@ -281,6 +389,8 @@ public class ConsoleUI {
             System.out.println("2) Approve/Reject Opportunities");
             System.out.println("3) Process Withdrawal Requests");
             System.out.println("4) Generate Report");
+            System.out.println("5) Browse opportunities (filtered)"); // NEW
+            System.out.println("6) Set filters / sort");               // NEW
             System.out.println("0) Logout");
             System.out.print("Choice: ");
             switch (readInt()) {
@@ -288,6 +398,8 @@ public class ConsoleUI {
                 case 2 -> staffApproveOpps(staff);
                 case 3 -> staffProcessWithdrawals(staff);
                 case 4 -> staffGenerateReport(staff);
+                case 5 -> staffBrowseOppsFiltered(staff);
+                case 6 -> editFiltersStaff(staff);
                 case 0 -> { return; }
                 default -> System.out.println("Invalid choice.");
             }
@@ -308,7 +420,6 @@ public class ConsoleUI {
     }
 
     private void staffApproveOpps(CareerCenterStaff staff) {
-        // simple: list all opportunities that are PENDING
         for (InternshipOpportunity o : oppRepo.findAll()) {
             if (o.getStatus() == OpportunityStatus.PENDING) {
                 System.out.printf("OPP=%s | %s | %s%n", o.getId(), o.getTitle(), o.getCompanyName());
@@ -360,6 +471,62 @@ public class ConsoleUI {
         System.out.println("Total opportunities: " + r.getTotalOpportunities());
     }
 
+    private void staffBrowseOppsFiltered(CareerCenterStaff staff) {
+        OpportunityFilter f = getFilterFor(staff.getUserId());
+        List<InternshipOpportunity> list = oppSvc.listAllFiltered(f);
+        if (list.isEmpty()) { System.out.println("No opportunities."); return; }
+        printFilterSummary(f);
+        printOpps(list);
+    }
+
+    private void editFiltersStaff(CareerCenterStaff staff) {
+        OpportunityFilter f = getFilterFor(staff.getUserId());
+        while (true) {
+            System.out.println("\n--- Filters (Staff) ---");
+            System.out.println("1) Status (current: " + f.getStatus() + ")");
+            System.out.println("2) Preferred Major (current: " + f.getPreferredMajor() + ")");
+            System.out.println("3) Level (current: " + f.getLevel() + ")");
+            System.out.println("4) Closing on/before (current: " + f.getClosingBefore() + ")");
+            System.out.println("5) Sort (current: " + f.getSortKey() + ")");
+            System.out.println("6) Clear all");
+            System.out.println("0) Back");
+            System.out.print("Choice: ");
+            switch (readInt()) {
+                case 1 -> {
+                    System.out.print("Status or blank: ");
+                    String s1 = sc.nextLine().trim();
+                    f.setStatus(s1.isBlank() ? null : OpportunityStatus.valueOf(s1.toUpperCase()));
+                }
+                case 2 -> {
+                    System.out.print("Preferred Major (blank=any): ");
+                    f.setPreferredMajor(sc.nextLine().trim());
+                }
+                case 3 -> {
+                    System.out.print("Level (BASIC/INTERMEDIATE/ADVANCED or blank): ");
+                    String lv = sc.nextLine().trim();
+                    f.setLevel(lv.isBlank() ? null : InternshipLevel.valueOf(lv.toUpperCase()));
+                }
+                case 4 -> {
+                    System.out.print("Closing on/before (YYYY-MM-DD or blank): ");
+                    String d = sc.nextLine().trim();
+                    f.setClosingBefore(d.isBlank() ? null : LocalDate.parse(d));
+                }
+                case 5 -> {
+                    System.out.print("Sort: ");
+                    String sk = sc.nextLine().trim();
+                    if (!sk.isBlank()) f.setSortKey(OpportunityFilter.SortKey.valueOf(sk.toUpperCase()));
+                }
+                case 6 -> {
+                    userFilters.put(staff.getUserId(), new OpportunityFilter());
+                    System.out.println("Filters cleared.");
+                    return;
+                }
+                case 0 -> { return; }
+                default -> System.out.println("Invalid choice.");
+            }
+        }
+    }
+
     // ===================== Helpers =====================
     private int readInt() {
         while (true) {
@@ -377,25 +544,27 @@ public class ConsoleUI {
                     o.getSlots(), o.getOpenDate(), o.getCloseDate());
         }
     }
-    
+
+    private void printFilterSummary(OpportunityFilter f) {
+        if (f == null) return;
+        System.out.println("~ Current filters: "
+                + "Status=" + f.getStatus()
+                + ", Major=" + f.getPreferredMajor()
+                + ", Level=" + f.getLevel()
+                + ", Close<= " + f.getClosingBefore()
+                + ", Sort=" + f.getSortKey());
+    }
+
     private void firstTimeSetup() {
         System.out.print("Enter your User ID: ");
         String uid = sc.nextLine().trim();
 
-        // ✅ Check if the user exists in the repository
         User existingUser = userRepo.findById(uid);
         if (existingUser == null) {
             System.out.println("❌ User ID not found. Please contact the Career Center Staff.");
             return;
         }
 
-        // If user already has a password, block first-time setup
-        /*if (existingUser.getPassword() != null && !existingUser.getPassword().isBlank()) {
-            System.out.println("⚠️  Password already set. Please login instead.");
-            return;
-        }*/
-
-        // Prompt for new password
         System.out.print("Enter new password: ");
         String p1 = sc.nextLine().trim();
         System.out.print("Confirm new password: ");
@@ -413,5 +582,4 @@ public class ConsoleUI {
             System.out.println("❌ Setup failed: " + e.getMessage());
         }
     }
-
 }
