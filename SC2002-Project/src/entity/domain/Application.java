@@ -1,10 +1,10 @@
 package entity.domain;
 
 
+import entity.domain.enums.ApplicationStatus;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import entity.domain.enums.ApplicationStatus;
+import util.IdGenerator;
 
 /**
  * Represents a student's application for an internship opportunity.
@@ -12,8 +12,11 @@ import entity.domain.enums.ApplicationStatus;
  */
 public class Application {
 
+
+    // ===== Static shared ID generator ======
+    private static final IdGenerator idGen = new IdGenerator();
     // ===== Attributes =====
-    private String id;
+    private final String id =  idGen.newId("A");
     private Student student;
     private InternshipOpportunity opportunity;
     private LocalDateTime appliedAt;
@@ -26,7 +29,7 @@ public class Application {
     }
 
     public Application(String id, Student student, InternshipOpportunity opportunity) {
-        this.id = id;
+    
         this.student = student;
         this.opportunity = opportunity;
         this.appliedAt = LocalDateTime.now();
@@ -39,9 +42,7 @@ public class Application {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    
 
     public Student getStudent() {
         return student;

@@ -1,9 +1,5 @@
 package Control;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-
 import entity.domain.Application;
 import entity.domain.CareerCenterStaff;
 import entity.domain.CompanyRepresentative;
@@ -13,6 +9,9 @@ import entity.domain.WithdrawalRequest;
 import entity.domain.enums.ApplicationStatus;
 import entity.domain.enums.OpportunityStatus;
 import entity.domain.enums.RequestStatus;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import repositories.ApplicationRepository;
 import repositories.OpportunityRepository;
 import util.Validator;
@@ -27,13 +26,14 @@ public class ApplicationService {
 	private final ApplicationRepository applicationRepository;
 	private final OpportunityRepository opportunityRepository;
 	private final Validator validator;
+
 	
 	public ApplicationService(ApplicationRepository applicationRepository,
 			OpportunityRepository opportunityRepository,
 			Validator validator) {
 		this.applicationRepository = Objects.requireNonNull(applicationRepository, "ApplicationRepository required");
 		this.opportunityRepository = Objects.requireNonNull(opportunityRepository, "OpportunityRepository required");
-		this.validator = validator = Objects.requireNonNull(validator, "Validator required");
+		this.validator =  Objects.requireNonNull(validator, "Validator required");
 	}
 
 	// Core Methods
@@ -44,7 +44,8 @@ public class ApplicationService {
 	 */
 	public Application apply(Student student, InternshipOpportunity opp) {
 		Objects.requireNonNull(student, "Student required");
-		Objects.requireNonNull(opp, "OPpportunity required");
+		Objects.requireNonNull(opp, "Opportunity required");
+		
 		
 		if (opp.getStatus() != OpportunityStatus.APPROVED || !opp.isVisibility()) {
 			throw new IllegalStateException("Opportunity is not open for Application.");
