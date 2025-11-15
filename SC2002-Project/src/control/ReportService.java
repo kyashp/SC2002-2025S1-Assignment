@@ -9,39 +9,39 @@ import entity.domain.Report;
 import entity.domain.ReportRow;
 import entity.domain.ReportFilter;
 import entity.domain.InternshipOpportunity;
-import entity.domain.enums.InternshipLevel;
-import entity.domain.enums.OpportunityStatus;
 import repositories.ApplicationRepository;
 import repositories.OpportunityRepository;
 
 
 /**
- * <<service>> ReportService
+ * <<Service>> ReportService
  * Generates aggregated reports of opportunities and applications.
  */
 public class ReportService {
-
-    // ===== Dependencies =====
     private final OpportunityRepository opportunityRepository;
     private final ApplicationRepository applicationRepository;
 
-    // ===== Constructor =====
+    /**
+     * Constructs a ReportService object for Career Center Staffs to generate reports
+     * @param opportunityRepository All stored InternshipOpportunities
+     * @param applicationRepository All stored Application
+     */
     public ReportService(OpportunityRepository opportunityRepository,
                          ApplicationRepository applicationRepository) {
         this.opportunityRepository = Objects.requireNonNull(opportunityRepository, "opportunityRepository required");
         this.applicationRepository = Objects.requireNonNull(applicationRepository, "applicationRepository required");
     }
 
-    // ===== API =====
-
     /**
      * Builds a Report based on the given filter.
      * For each matching opportunity, adds a ReportRow with:
      * - opportunityId, title, level, status, preferredMajor
      * - totalApplications, filledSlots (successful apps), remainingSlots
+     * @param filter ReportFilter
+     * @return Report 
      */
     public Report generate(ReportFilter filter) {
-        // 1) Fetch opportunities (approved/visible + filter) as per your UML
+        // 1) Fetch opportunities (approved/visible + filter)
         List<InternshipOpportunity> opps =
                 opportunityRepository.findApprovedVisibleByFilter(filter);
 
@@ -58,8 +58,11 @@ public class ReportService {
         return report;
     }
 
-    // ===== Helpers =====
-
+    /**
+     * Builds a row for an internship
+     * @param opp InternshipOpportunity
+     * @return ReportRow
+     */
     private ReportRow buildRow(InternshipOpportunity opp) {
         int totalApps = applicationRepository.findByOpportunity(opp).size();
         int filledSlots = applicationRepository.countSuccessfulByOpportunity(opp);
