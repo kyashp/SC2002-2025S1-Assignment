@@ -11,29 +11,39 @@ import entity.domain.enums.RequestStatus;
  * Extends the abstract User class.
  */
 public class CareerCenterStaff extends User {
-
-    // ===== Attributes =====
     private String staffDepartment;
 
-    // ===== Constructor =====
-    public CareerCenterStaff(String userId, String username, String password, String staffDepartment) {
+    /**
+     * Constructs a new Career Center Staff with inputs
+     * @param userId NTU Account
+     * @param username Name of staff
+     * @param password Default: password
+     * @param staffDepartment Department (ex. CCDS)
+     */
+    public CareerCenterStaff(String userId, String username, String staffDepartment) {
         super(userId, username);
         this.staffDepartment = staffDepartment;
     }
 
-    // ===== Getters & Setters =====
+    /**
+     * Retrieves staff department
+     * @return String staffDepartment
+     */
     public String getStaffDepartment() {
         return staffDepartment;
     }
 
+    /**
+     * Sets staff department
+     * @param staffDepartment String staffDepartment
+     */
     public void setStaffDepartment(String staffDepartment) {
         this.staffDepartment = staffDepartment;
     }
 
-    // ===== Behaviors =====
-
     /**
      * Approves a company representative’s registration request.
+     * @param req RegistrationRequest
      */
     public void approveCompanyRep(RegistrationRequest req) {
         Objects.requireNonNull(req, "RegistrationRequest required");
@@ -44,6 +54,7 @@ public class CareerCenterStaff extends User {
 
     /**
      * Rejects a company representative’s registration request.
+     * @param req RegistrationRequest
      */
     public void rejectCompanyRep(RegistrationRequest req) {
         Objects.requireNonNull(req, "RegistrationRequest required");
@@ -54,6 +65,7 @@ public class CareerCenterStaff extends User {
 
     /**
      * Approves an internship opportunity.
+     * @param opp InternshipOpportunity
      */
     public void approveOpportunity(InternshipOpportunity opp) {
         Objects.requireNonNull(opp, "InternshipOpportunity required");
@@ -63,6 +75,7 @@ public class CareerCenterStaff extends User {
 
     /**
      * Rejects an internship opportunity.
+     * @param opp InternshipOpportunity
      */
     public void rejectOpportunity(InternshipOpportunity opp) {
         Objects.requireNonNull(opp, "InternshipOpportunity required");
@@ -72,6 +85,8 @@ public class CareerCenterStaff extends User {
 
     /**
      * Decides on a student’s withdrawal request.
+     * @param req WithdrawalRequest
+     * @param approve Decision to approve or not
      */
     public void decideWithdrawal(WithdrawalRequest req, boolean approve) {
         Objects.requireNonNull(req, "WithdrawalRequest required");
@@ -87,6 +102,9 @@ public class CareerCenterStaff extends User {
 
     /**
      * Generates a report using the ReportService and a given filter.
+     * @param filter ReportFilter filter settings
+     * @param reportService ReportService
+     * @return
      */
     public Report generateReport(ReportFilter filter, ReportService reportService) {
         Objects.requireNonNull(reportService, "ReportService required");
