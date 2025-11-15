@@ -9,8 +9,8 @@ import entity.domain.InternshipOpportunity;
 import entity.domain.ReportFilter;
 import entity.domain.enums.OpportunityStatus;
 
-/* 
- * <<repossitory>> Opportunity Repository
+/** 
+ * <<repository>> Opportunity Repository
  * Stores and retrieves InternshipOpportuniity entities
  * Acts as an in-memory data access layer for company reps,staff, and reports
  */

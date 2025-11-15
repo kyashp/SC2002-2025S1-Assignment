@@ -9,16 +9,19 @@ import entity.domain.WithdrawalRequest;
 import entity.domain.enums.RequestStatus;
 
 
-
+/**
+ * <<Repository>> Request Repository
+ * Stores and retrieves Requests: Registration and Withdrawal
+ * Acts as an in-memory data access layer for requests to Career Center Staff
+ */
 public class RequestRepository {
-	// ===== Attributes =====
-	
 	private final List<RegistrationRequest> registrationRequests = new ArrayList<>();
 	private final List<WithdrawalRequest> withdrawalRequests = new ArrayList<>();
 	
 	/**
      * Saves a request (either RegistrationRequest or WithdrawalRequest).
      * Automatically routes to the correct list.
+     * @param req Registration or Withdrawal request
      */
     public void save(Object req) {
         Objects.requireNonNull(req, "Request cannot be null");
@@ -38,6 +41,7 @@ public class RequestRepository {
 
     /**
      * Finds all pending WithdrawalRequests.
+     * @return pending list (Withdrawals)
      */
     public List<WithdrawalRequest> findPendingWithdrawals() {
         List<WithdrawalRequest> pending = new ArrayList<>();
@@ -50,7 +54,8 @@ public class RequestRepository {
     }
 
     /**
-     * Finds all pending RegistrationRequests for Company Representatives.
+     * Finds all pending RegistrationRequest of Company Representatives.
+     * @return pending list (Registration)
      */
     public List<RegistrationRequest> findPendingRepRegistrations() {
         List<RegistrationRequest> pending = new ArrayList<>();
@@ -62,8 +67,11 @@ public class RequestRepository {
         return pending;
     }
 
-    // ===== Helper Finders for internal use =====
-
+    /**
+     * Finds a Registration Request
+     * @param id String id of the request
+     * @return RegistrationRequest or null if no request
+     */
     private RegistrationRequest findRegistrationById(String id) {
         if (id == null) return null;
         for (RegistrationRequest req : registrationRequests) {
@@ -72,6 +80,11 @@ public class RequestRepository {
         return null;
     }
 
+    /**
+     * Finds a Withdrawal Request
+     * @param id String id of the request
+     * @return WithdrawalRequest or null if no request
+     */
     private WithdrawalRequest findWithdrawalById(String id) {
         if (id == null) return null;
         for (WithdrawalRequest req : withdrawalRequests) {
@@ -81,7 +94,7 @@ public class RequestRepository {
     }
 
     /**
-     * Clears all stored requests (useful for testing or resets).
+     * Empty all requests
      */
     public void clear() {
         registrationRequests.clear();

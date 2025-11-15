@@ -5,27 +5,23 @@ import java.util.List;
 import java.util.Objects;
 
 import entity.domain.User;
-import entity.domain.Student;
 import entity.domain.CompanyRepresentative;
+import entity.domain.Student;
 
-/*
- * <<<repository>> UserRepository
+/**
+ * <<<Repository>> UserRepository
  * Stores and retrieves the User entities such as Student, CompanyRepresentative, and CareerCenterStaff
  * Acts as an in-memory data access layer for the application
  */
 
 public class UserRepository {
-
-	// ===== Attributes =====
 	private final List<User> users = new ArrayList<>();
 	
-	// ===== Methods =====
-	
-	/* 
-	 * Saves of updates a user in the repository
+	/**
+	 * Saves or updates a user in the repository
 	 * If a user with the same ID already exists, it will be replaced.
-	 */
-	
+	 * @param user Any of the 3 users
+	 */	
 	public void save(User user) {
 		Objects.requireNonNull(user, "User required");
 		
@@ -36,12 +32,12 @@ public class UserRepository {
 		}
 		users.add(user);
 	}
-	
-	/* Finds a user by their unique ID
-	 * input would be the user ID
-	 * return the matching user, or null if not found
+
+	/**
+	 * Finds a user by their unique ID 
+	 * @param id userId
+	 * @return The matching user, or null if not found
 	 */
-	
 	public User findById(String id) {
 		if (id == null) {
 			return null;
@@ -53,11 +49,11 @@ public class UserRepository {
 		}
 		return null;
 	}
-	
-	/* 
-	 * Return all students in the repository
+
+	/**
+	 * Returns all the Students in the list
+	 * @return List of all Students
 	 */
-	
 	 public List<Student> findAllStudents() {
 	        List<Student> result = new ArrayList<>();
 	        for (User user : users) {
@@ -68,27 +64,26 @@ public class UserRepository {
 	        return result;
 	 }
 	 
-	 /* 
-	  * Returns all company representatives whose accounts are not yet approved
-	  * 
-	  */
+	/**
+	 * Returns all pending Company representatives in the list
+	* @return List of pending Company Representatives
+	*/
+	public List<CompanyRepresentative> findAllCompanyRepsPending(){
+		List<CompanyRepresentative> result = new ArrayList<>();
+		for (User user : users) {
+			if (user instanceof CompanyRepresentative rep && !rep.isApproved()) {
+				result.add(rep);
+			}
+		}
+		return result;
+	}
 	 
-	 public List<CompanyRepresentative> findAllCompanyRepsPending(){
-		 List<CompanyRepresentative> result = new ArrayList<>();
-		 for (User user : users) {
-			 if (user instanceof CompanyRepresentative rep && !rep.isApproved()) {
-				 result.add(rep);
-			 }
-		 }
-		 return result;
-	 }
-	 
-	  /**
-	     * Clears the repository (for testing or reset).
-	     */
-	 public void clear() {
-		 users.clear();
-	 }
+	/**
+	* Clears the repository (for testing or reset).
+	*/
+	public void clear() {
+		users.clear();
+	}
 	
 	
 }
