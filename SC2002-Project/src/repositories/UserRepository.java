@@ -11,7 +11,7 @@ import entity.domain.Student;
 /**
  * <<<Repository>> UserRepository
  * Stores and retrieves the User entities such as Student, CompanyRepresentative, and CareerCenterStaff
- * Acts as an in-memory data access layer for the application
+ * Acts as an in-memory data access layer of the Users in the system
  */
 
 public class UserRepository {
@@ -19,7 +19,7 @@ public class UserRepository {
 	
 	/**
 	 * Saves or updates a user in the repository
-	 * If a user with the same ID already exists, it will be replaced.
+	 * If a user with the same ID already exists, it will be replaced
 	 * @param user Any of the 3 users
 	 */	
 	public void save(User user) {
@@ -79,11 +79,9 @@ public class UserRepository {
 	}
 	 
 	/**
-	* Clears the repository (for testing or reset).
+	* Clears the repository (for testing or reset)
 	*/
 	public void clear() {
 		users.clear();
 	}
-	
-	
 }

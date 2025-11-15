@@ -10,15 +10,12 @@ import entity.domain.ReportFilter;
 import entity.domain.enums.OpportunityStatus;
 
 /** 
- * <<repository>> Opportunity Repository
+ * <<Repository>> Opportunity Repository
  * Stores and retrieves InternshipOpportuniity entities
  * Acts as an in-memory data access layer for company reps,staff, and reports
  */
 
 public class OpportunityRepository {
-	
-	// Attributes
-	
 	private final List<InternshipOpportunity> opportunities = new ArrayList<>();
 	
 	
