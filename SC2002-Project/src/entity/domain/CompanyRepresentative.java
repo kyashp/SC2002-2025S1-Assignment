@@ -12,16 +12,21 @@ import repositories.ApplicationRepository;
  * Represents a company representative who can create internship opportunities
  * and review student applications.
  */
-
 public class CompanyRepresentative extends User{
-	
-	 // ===== Attributes =====
     private String companyName;
     private String department;
     private String position;
     private boolean isApproved;
-    
-    // ===== Constructor =====
+
+    /**
+     * Constructs
+     * @param userId
+     * @param username
+     * @param password
+     * @param companyName
+     * @param department
+     * @param position
+     */
     public CompanyRepresentative(String userId, String username, String password,
             String companyName, String department, String position) {
 		super(userId, username);
@@ -31,7 +36,7 @@ public class CompanyRepresentative extends User{
 		this.isApproved = false; // Default: unapproved until staff approval
     }
     
-    // ===== Getters & Setters =====
+    
     public String getCompanyName() {
         return companyName;
     }

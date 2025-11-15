@@ -1,7 +1,7 @@
 package entity.domain;
 import util.*;
 /**
- * This class is the abstract parent class for the 3 distinct users: Student, Company Representative and Career Centre Staff
+ * Represents the abstract parent class for the 3 distinct users: Student, Company Representative and Career Centre Staff
  */
 public abstract class User {
     private String userId;

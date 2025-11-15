@@ -11,7 +11,7 @@ import entity.domain.enums.OpportunityStatus;
 
 /** 
  * <<Repository>> OpportunityRepository
- * Stores and retrieves InternshipOpportuniity entities
+ * Stores and retrieves InternshipOpportunity entities
  * Acts as an in-memory data access layer for all the listed Interns
  */
 public class OpportunityRepository {

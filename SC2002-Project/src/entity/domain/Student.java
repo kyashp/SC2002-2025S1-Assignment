@@ -17,6 +17,7 @@ public class Student extends User {
 	private int year;
 	private String major;
 	private Application acceptedPlacement;
+    private Boolean visibility;
 	
 	/**
      * Constructs a new Student object with inputs
@@ -31,8 +32,23 @@ public class Student extends User {
 		this.year = year;
 		this.major = major;
 		this.acceptedPlacement = null;
+        this.visibility = false;
 	}
-	
+	/**
+     * Retrieves Student visibilty
+     * @return boolean of Student visibility
+     */
+    public boolean getVisibility(){
+        return this.visibility;
+    }
+
+    /**
+     * Sets Student visibility
+     * @param visibility boolean of Student visibility
+     */
+    public void setVisibility(boolean visibility){
+        this.visibility = visibility;
+    }
 	/**
      * Retrieves Student year of study
      * @return int year (1-4)
@@ -97,7 +113,6 @@ public class Student extends User {
         }
         return eligible;
     }
-    
     
     /**
      * Allows a student to apply for an opportunity.
