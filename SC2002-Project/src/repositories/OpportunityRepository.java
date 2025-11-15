@@ -10,22 +10,18 @@ import entity.domain.ReportFilter;
 import entity.domain.enums.OpportunityStatus;
 
 /** 
- * <<Repository>> Opportunity Repository
+ * <<Repository>> OpportunityRepository
  * Stores and retrieves InternshipOpportuniity entities
- * Acts as an in-memory data access layer for company reps,staff, and reports
+ * Acts as an in-memory data access layer for all the listed Interns
  */
-
 public class OpportunityRepository {
 	private final List<InternshipOpportunity> opportunities = new ArrayList<>();
-	
-	
-	// Methods
-	
-	/* 
-	 * Saves or updates an internship opportunity
-	 * If the opportunity already exits (same ID), replaces it
-	 */
-	
+
+	/**
+     * Saves or updates an internship opportunity.
+	 * If the opportunity already exits (same Id), replaces it.
+     * @param opp InternshipOpportunity
+     */
 	public void save(InternshipOpportunity opp) {
 		Objects.requireNonNull(opp, "Opportunity cannot be null");
 		
@@ -36,10 +32,11 @@ public class OpportunityRepository {
 		opportunities.add(opp);
 	}
 	
-	/* 
-	 * Finds an opportunity by its unique ID.
-	 */
-	
+	/**
+     * Finds an opportunity by its unique ID.
+     * @param id InternshipOpportunity Id
+     * @return InternshipOpportunity if there is one by that Id, null if none
+     */
 	public InternshipOpportunity findById(String id) {
 		if (id == null) return null;
 		for (InternshipOpportunity opp: opportunities) {
