@@ -43,10 +43,10 @@ public class FileImporter {
                 if (header) { header = false; continue; }
                 String[] t = line.split("[,\\t]");
                 if (t.length < 5) continue;
-                String id = t[0].trim(), name = t[1].trim(), password = t[2].trim();
+                String id = t[0].trim(), name = t[1].trim();
                 int year = Integer.parseInt(t[3].trim());
                 String major = t[4].trim();
-                Student s = new Student(id, name, password, year, major);
+                Student s = new Student(id, name, year, major);
                 userRepository.save(s);
                 students.add(s);
             }

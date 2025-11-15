@@ -27,7 +27,7 @@ public class Student extends User {
      * @param year Student year of study (1-4)
      * @param major Student major (Computer Science)
      */
-	public Student(String userId, String userName, String password, int year, String major) {
+	public Student(String userId, String userName, int year, String major) {
 		super(userId, userName);
 		this.year = year;
 		this.major = major;

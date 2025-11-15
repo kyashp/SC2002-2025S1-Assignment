@@ -19,63 +19,99 @@ public class CompanyRepresentative extends User{
     private boolean isApproved;
 
     /**
-     * Constructs
-     * @param userId
-     * @param username
-     * @param password
-     * @param companyName
-     * @param department
-     * @param position
+     * Constructs a new Company Representative object with inputs
+     * @param userId Company email
+     * @param username Name of Representative
+     * @param password Password for Representative account
+     * @param companyName Company Name
+     * @param department Department (ex. Sales)
+     * @param position Position (ex. HR)
      */
     public CompanyRepresentative(String userId, String username, String password,
             String companyName, String department, String position) {
 		super(userId, username);
+        super.setPassword(password);
 		this.companyName = companyName;
 		this.department = department;
 		this.position = position;
 		this.isApproved = false; // Default: unapproved until staff approval
     }
     
-    
+    /**
+     * Retrieves Company Name
+     * @return String companyName
+     */
     public String getCompanyName() {
         return companyName;
     }
 
+    /**
+     * Sets company name
+     * @param companyName String companyName
+     */
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
 
+    /**
+     * Retrieves department
+     * @return String department
+     */
     public String getDepartment() {
         return department;
     }
 
+    /**
+     * Sets department
+     * @param department String department
+     */
     public void setDepartment(String department) {
         this.department = department;
     }
 
+    /**
+     * Retrieves position
+     * @return String position
+     */
     public String getPosition() {
         return position;
     }
 
+
+    /**
+     * Sets position
+     * @param position String position
+     */
     public void setPosition(String position) {
         this.position = position;
     }
 
+    /**
+     * Retrieves status of account approval
+     * @return boolean isApproved;
+     */
     public boolean isApproved() {
         return isApproved;
     }
 
+    /**
+     * Sets status of account approval
+     * @param approved boolean approved;
+     */
     public void setApproved(boolean approved) {
         this.isApproved = approved;
     }
-    
-    
-    // ===== Behaviors =====
 
     /**
      * Creates a new internship opportunity in draft (PENDING) state.
+     * @param id Internship id
+     * @param title Internship title
+     * @param description Internship description
+     * @param level Internship level (Basic, Intermediate, Advanced)
+     * @param preferredMajor Preferred major (Computer Science)
+     * @param slots Number of slots 0<n<=10
+     * @return
      */
-    
     public InternshipOpportunity createOpportunity(String id, String title, String description, 
     		entity.domain.enums.InternshipLevel level, 
     		String preferredMajor, int slots) {
@@ -87,11 +123,12 @@ public class CompanyRepresentative extends User{
         opp.setVisibility(false);
         System.out.println(getUserName() + " created opportunity: " + title);
         return opp;
-    	
     }
     
     /**
      * Returns a list of all opportunities created by this representative.
+     * @param oppRepo OpportunityRepository
+     * @return List of opportunities within the company
      */
     public List<InternshipOpportunity> listMyOpportunities(OpportunityRepository oppRepo) {
         Objects.requireNonNull(oppRepo, "OpportunityRepository required");
@@ -100,6 +137,8 @@ public class CompanyRepresentative extends User{
     
     /**
      * Toggles visibility of an approved opportunity.
+     * @param opp InternshipOpportunity
+     * @param on Visibility (True/False)
      */
     public void toggleVisibility(InternshipOpportunity opp, boolean on) {
         Objects.requireNonNull(opp, "Opportunity required");
@@ -115,6 +154,9 @@ public class CompanyRepresentative extends User{
     
     /**
      * Returns all applications associated with a specific opportunity.
+     * @param opp InternshipOpportunity
+     * @param appRepo ApplicationRepository
+     * @return List of all applications for an InternshipOpportunity
      */
     public List<Application> reviewApplications(InternshipOpportunity opp, ApplicationRepository appRepo) {
         Objects.requireNonNull(opp, "Opportunity required");
