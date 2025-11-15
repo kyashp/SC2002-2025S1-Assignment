@@ -17,10 +17,10 @@ import entity.domain.enums.ApplicationStatus;
  */
 public class ApplicationRepository {
 
-    // ===== Storage =====
+    //Storage
     private final List<Application> applications = new ArrayList<>();
 
-    // ===== CRUD-like ops =====
+    //CRUD-like ops
 
     /**
      * Saves or updates an application.
@@ -78,7 +78,7 @@ public class ApplicationRepository {
         return count;
     }
 
-    // ===== Helpers (optional) =====
+    //Helpers (optional)
 
     /** Finds an application by id (useful for updates). */
     public Application findById(String id) {

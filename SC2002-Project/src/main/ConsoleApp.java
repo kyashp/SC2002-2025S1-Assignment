@@ -1,12 +1,9 @@
 package main;
 
 import java.io.File;
-import java.util.List;
 
-import entity.domain.*;
-import entity.domain.enums.*;
+import control.*;
 import repositories.*;
-import Control.*;
 import util.*;
 
 /**

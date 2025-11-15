@@ -1,4 +1,4 @@
-package Control;
+package control;
 
 import entity.domain.Application;
 import entity.domain.CareerCenterStaff;

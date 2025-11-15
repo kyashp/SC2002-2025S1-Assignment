@@ -6,5 +6,6 @@ package entity.domain.enums;
 public enum ApplicationStatus {
     PENDING,      // Application submitted, awaiting review
     SUCCESSFUL,   // Approved by company representative
-    UNSUCCESSFUL  // Rejected or withdrawn
+    UNSUCCESSFUL, // Rejected
+    WITHDRAWN  // Withdrawn
 }

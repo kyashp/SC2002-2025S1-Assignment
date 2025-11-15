@@ -9,29 +9,42 @@ import entity.domain.enums.ApplicationStatus;
 import repositories.ApplicationRepository;
 
 /**
- * Represents a student in the internship placement system.
+ * Represents a student in the Internship Placement Management System.
  * Extends the abstract User class.
  */
 
 public class Student extends User {
-	// ===== Attributes =====
 	private int year;
 	private String major;
 	private Application acceptedPlacement;
 	
-	// ===== Constructors =====
-	public Student(String userId, String userName, String password, int year, String Major) {
-		super(userId, userName, password);
+	/**
+     * Constructs a new Student object with inputs
+     * @param userId Matriculation number: Begins with U, 7 digits and ends with a letter
+     * @param userName Student name
+     * @param password Default: password, First time login students will be asked to change
+     * @param year Student year of study (1-4)
+     * @param major Student major (Computer Science)
+     */
+	public Student(String userId, String userName, String password, int year, String major) {
+		super(userId, userName);
 		this.year = year;
 		this.major = major;
 		this.acceptedPlacement = null;
 	}
 	
-	// ===== Getters & Setters =====
+	/**
+     * Retrieves Student year of study
+     * @return int year (1-4)
+     */
 	public int getYear() {
 		return year;
 	}
 	
+    /**
+     * Sets Student year of study
+     * @param year Year of study (1-4)
+     */
 	public void setYear(int year) {
         if (year < 1 || year > 4) {
             throw new IllegalArgumentException("Year must be between 1 and 4.");
@@ -39,24 +52,37 @@ public class Student extends User {
         this.year = year;
     }
 
+    /**
+     * Retrieves Student major
+     * @return String major (Computer Science)
+     */
     public String getMajor() {
         return major;
     }
 
+    /**
+     * Sets Student major
+     * @param major String major (Computer Science)
+     */
     public void setMajor(String major) {
         this.major = major;
     }
 
+    /**
+     * Retrieves the acceptedPlacement
+     * @return Application acceptedPlacement
+     */
     public Application getAcceptedPlacement() {
         return acceptedPlacement;
     }
-
+    /**
+     * Sets a placement as an acceptedPlacement
+     * @param acceptedPlacement
+     */
     public void setAcceptedPlacement(Application acceptedPlacement) {
         this.acceptedPlacement = acceptedPlacement;
     }
     
-    // ===== Behaviors =====
-
     /**
      * Returns a list of opportunities a student is eligible for.
      * (Stub method — actual filtering is handled by OpportunityService)
@@ -77,8 +103,6 @@ public class Student extends User {
      * Allows a student to apply for an opportunity.
      * Uses the ApplicationRepository to store the application.
      */
-    
-    
     public void apply(InternshipOpportunity opp, ApplicationRepository appRepo) {
         Objects.requireNonNull(opp, "Opportunity required");
         Objects.requireNonNull(appRepo, "ApplicationRepository required");
@@ -124,7 +148,7 @@ public class Student extends User {
             appRepo.save(app);
             System.out.println(getUserName() + " accepted the offer for " + app.getOpportunity().getTitle());
         } else {
-            System.out.println("Cannot accept an application that was not marked SUCCESSFUL.");
+            System.out.println("Cannot accept an application unless application status is SUCCESSFUL.");
         }
     }
 
@@ -133,9 +157,5 @@ public class Student extends User {
         return String.format("Student[%s, %s, Year %d, Major: %s]",
                 getUserId(), getUserName(), year, major);
     }
-
-	
-
-	
 }
 

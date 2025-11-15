@@ -1,4 +1,4 @@
-package Control;
+package control;
 
 import java.io.File;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package Control;
+package control;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

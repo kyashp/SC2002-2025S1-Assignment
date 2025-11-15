@@ -8,7 +8,6 @@ import java.util.Objects;
 import entity.domain.InternshipOpportunity;
 import entity.domain.ReportFilter;
 import entity.domain.enums.OpportunityStatus;
-import entity.domain.enums.InternshipLevel;
 
 /* 
  * <<repossitory>> Opportunity Repository

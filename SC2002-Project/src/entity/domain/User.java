@@ -1,76 +1,96 @@
 package entity.domain;
-
+import util.*;
+/**
+ * This class is the abstract parent class for the 3 distinct users: Student, Company Representative and Career Centre Staff
+ */
 public abstract class User {
-	
-	private String userId;
-	private String userName;
-	private String password;
-	private boolean isLoggedIn;
-	
-	protected User(String userId, String userName, String password) {
-		this.userId = userId;
-		this.userName = userName;
-		this.password = password;
-		this.isLoggedIn = false;
-		
-	}
-	
-	//===== Getters =====
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-    
-    
-    
-    public boolean isLoggedIn() {
-    	return isLoggedIn;
-    }
- // ===== Setters =====
-    public String setUserName(String name) {
-        this.userName = name;
-        return this.userName;
-    }
-    
-    public void setPassword(String password) {
-    	this.password = password;
-    }
-    
-    public void setLoggedIn(boolean isLoggedIn) {
-    	this.isLoggedIn = isLoggedIn;
-    }
-	
- // ===== Methods =====
+    private String userId;
+    private String userName;
+    private String password;
+    private boolean isLoggedIn;
 
     /**
-     * Simulates user login.
-     * Checks whether the entered password matches the stored password.
+     * Contructs a new user object with distinct userId, default password for a new user is "password"
+     * @param userId Unique Id given to every user
      */
-    
-	public void login(String inputPassword) {
-		System.out.println("");	
-		 if (this.password.equals(inputPassword)) {
-	            this.isLoggedIn = true;
-	            System.out.println(userName + " logged in successfully.");
-	        } else {
-	            System.out.println("Invalid password for " + userName + ".");
-	        }
-	}
-	
-	
-	public void logout() {
-		if (this.isLoggedIn) {
+    protected User(String userId, String userName){
+        this.userId = userId;
+        this.userName = userName;
+        this.password = "password";
+        this.isLoggedIn = false;
+    }
+
+    /**
+     * Retrieves String userId
+     * @return String userId
+     */
+    public String getUserId(){
+        return userId;
+    }
+    /**
+     * Retrieves String userName
+     * @return String userName
+     */
+    public String getUserName(){
+        return userName;
+    }
+    /**
+     * Retrieves boolean isLoggedIn
+     * @return Boolean isLoggedIn (login state) 
+     */
+    public boolean isLoggedIn(){
+        return isLoggedIn;
+    }
+
+    /**
+     * Sets a new password with jBcrypt hashing
+     * @param password The plaintext password entered by user
+     */
+    public void setPassword(String password){
+        try {
+            this.password = PasswordHasher.hashPassword(password);
+        } catch (Exception e) {
+            System.out.println("Hashing function failed!");
+        }
+    }
+
+    /**
+     * Sets the login state
+     * @param isLoggedIn A boolean reflecting login state
+     */
+    public void setLoggedIn(boolean isLoggedIn){
+        this.isLoggedIn = isLoggedIn;
+    }
+
+    /**
+     * Simulates login for a user
+     * @param inputPassword The plaintext input password entered by user
+     */
+    public void login(String inputPassword){
+        System.out.println("");
+        try {
+            Boolean verification = PasswordHasher.verifyPassword(inputPassword, this.password);
+            if(verification){
+                this.isLoggedIn = true;
+                System.out.println(userName + " logged in successfully.");
+            } else {
+                System.out.println("Invalid username or password!");
+            }
+        } catch (Exception e) {
+            System.out.println("Verifying password failed!");
+        }
+        
+    }
+
+    /**
+     * Simulates logout for a user
+     */
+    public void logout(){
+        if(this.isLoggedIn){
             this.isLoggedIn = false;
-            System.out.println(userName + " logged out. Returning to login page...\n");
+            System.out.println(userName + " logged out.");
         } else {
             System.out.println("User is already logged out.");
         }
-	}
-	
-	public void changePassword(String newPwd) {
-		
-	}
+    }
 }

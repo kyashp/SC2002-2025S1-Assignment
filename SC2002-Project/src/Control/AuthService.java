@@ -1,4 +1,4 @@
-package Control;
+package control;
 
 import entity.domain.User;
 import repositories.UserRepository;
@@ -92,7 +92,7 @@ public class AuthService {
 	        }
 
 	        // Delegate password change to User class
-	        user.changePassword(newPwd);
+	        user.setPassword(newPwd);
 
 	        // Save updated user info
 	        userRepository.save(user);

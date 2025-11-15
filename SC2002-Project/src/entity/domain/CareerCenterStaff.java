@@ -2,14 +2,9 @@ package entity.domain;
 
 import java.util.Objects;
 
+import control.ReportService;
 import entity.domain.enums.OpportunityStatus;
 import entity.domain.enums.RequestStatus;
-import entity.domain.RegistrationRequest;
-import entity.domain.WithdrawalRequest;
-import entity.domain.InternshipOpportunity;
-import entity.domain.Report;
-import entity.domain.ReportFilter;
-import Control.ReportService;
 
 /**
  * Represents a Career Center Staff member in the internship placement system.
@@ -22,7 +17,7 @@ public class CareerCenterStaff extends User {
 
     // ===== Constructor =====
     public CareerCenterStaff(String userId, String username, String password, String staffDepartment) {
-        super(userId, username, password);
+        super(userId, username);
         this.staffDepartment = staffDepartment;
     }
 

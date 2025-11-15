@@ -24,7 +24,7 @@ public class CompanyRepresentative extends User{
     // ===== Constructor =====
     public CompanyRepresentative(String userId, String username, String password,
             String companyName, String department, String position) {
-		super(userId, username, password);
+		super(userId, username);
 		this.companyName = companyName;
 		this.department = department;
 		this.position = position;
