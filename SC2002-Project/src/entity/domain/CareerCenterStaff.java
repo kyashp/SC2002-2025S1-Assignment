@@ -104,7 +104,7 @@ public class CareerCenterStaff extends User {
      * Generates a report using the ReportService and a given filter.
      * @param filter ReportFilter filter settings
      * @param reportService ReportService
-     * @return
+     * @return Report
      */
     public Report generateReport(ReportFilter filter, ReportService reportService) {
         Objects.requireNonNull(reportService, "ReportService required");
