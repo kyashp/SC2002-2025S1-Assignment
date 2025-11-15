@@ -47,11 +47,12 @@ public class OpportunityRepository {
 		return null;
 	}
 	
-	/*
-	 * Finds all approved & visible opportunities that match the given report filter.
-	 *  If filter is null, returns all approved & visible opportunities
-	 */
-	
+	/**
+     * Finds all approved & visible opportunities that match the given report filter.
+	 * If filter is null, returns all approved & visible opportunities.
+     * @param filter ReportFilter for the filter settings
+     * @return List of InternshipOpportunity by the filter
+     */
 	public List<InternshipOpportunity> findApprovedVisibleByFilter(ReportFilter filter){
 		List<InternshipOpportunity> result = new ArrayList<>();
 		for (InternshipOpportunity opp: opportunities) {
@@ -97,6 +98,8 @@ public class OpportunityRepository {
 	
 	/**
      * Returns all opportunities belonging to a given company.
+     * @param company String companyName
+     * @return List of InternshipOpportunity by the company
      */
     public List<InternshipOpportunity> findByCompany(String company) {
         List<InternshipOpportunity> result = new ArrayList<>();
@@ -112,14 +115,15 @@ public class OpportunityRepository {
     
     /**
      * Returns all opportunities stored (for testing or reports).
+     * @return List of all InternshipOpportunities
      */
     public List<InternshipOpportunity> findAll() {
         return new ArrayList<>(opportunities);
     }
     
     /**
-     * Clears all stored opportunities (used for testing or system reset).
-     */
+	* Clears the repository (for testing or reset)
+	*/
     public void clear() {
         opportunities.clear();
     }
