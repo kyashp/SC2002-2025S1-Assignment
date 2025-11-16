@@ -60,7 +60,7 @@ public class ConsoleUI {
         while (true) {
             String design = "=".repeat(46);
             System.out.println(design);
-            System.out.println("\n=== Internship Placement Management System ===");
+            System.out.println("    Internship Placement Management System    ");
             System.out.println(design);
             System.out.println("\nNote: For first-time Students and Career Center Staff proceed to Login with the default password.\nNote: For first-time Company Representatives please Register for an account.\n");
             System.out.println("1) Login");
