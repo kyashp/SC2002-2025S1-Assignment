@@ -59,8 +59,9 @@ public class ConsoleUI {
     public void start() {
         while (true) {
             String design = "=".repeat(46);
+            System.out.println();
             System.out.println(design);
-            System.out.println("    Internship Placement Management System    ");
+            System.out.println("=== Internship Placement Management System ===");
             System.out.println(design);
             System.out.println("\nNote: For first-time Students and Career Center Staff proceed to Login with the default password.\nNote: For first-time Company Representatives please Register for an account.\n");
             System.out.println("1) Login");
@@ -80,6 +81,10 @@ public class ConsoleUI {
     private void doLogin() {
         System.out.print("\nEnter User ID: ");
         String uid = sc.nextLine().trim();
+        if((!vdr.isValidNtuId(uid)) && (!vdr.isValidCompanyEmail(uid)) && (!vdr.isValidStudentId(uid))){
+            System.out.println("\n<<Enter a valid User ID>>");
+            return;
+        }
         User temp = userRepo.findById(uid);
         if(auth.isStudentOrStaff(uid) && (temp.getPassword()=="password")){
             System.out.print("Enter Full Name: ");

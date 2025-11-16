@@ -75,7 +75,7 @@ public class FileImporter {
                 if (header) { header = false; continue; }
                 String[] t = line.split("[,\\t]");
                 if (t.length < 4) continue;
-                String id = t[0].trim(), name = t[1].trim(), dept = t[3].trim();
+                String id = t[4].trim(), name = t[1].trim(), dept = t[3].trim();
                 CareerCenterStaff staff = new CareerCenterStaff(id, name, dept);
                 userRepository.save(staff);
                 staffList.add(staff);

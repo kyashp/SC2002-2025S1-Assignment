@@ -11,12 +11,11 @@ public class Validator {
     // ===== Regex Patterns =====
     // NTU Student IDs usually look like "S1234567" or "U1234567A"
     private static final Pattern STUDENT_ID_PATTERN = Pattern.compile("^[SU]\\d{7}[A-Z]?$");
-    private static final Pattern NTU_ID_PATTERN = Pattern.compile("^[A-Z]\\d{7}[A-Z]$");
+    private static final Pattern NTU_ID_PATTERN = Pattern.compile("^\\w+@ntu\\.edu\\.sg$");
     private static final Pattern COMPANY_EMAIL_PATTERN = Pattern.compile("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
 
     // ===== Methods =====
 
-    //[USELESS]
     /**
      * Checks if the given ID matches a valid student ID format.
      * Examples: S1234567A, U1234567B, S7654321
@@ -26,14 +25,13 @@ public class Validator {
         return STUDENT_ID_PATTERN.matcher(id.trim()).matches();
     }
 
-    //[USELESS]
     /**
-     * Checks if the given ID matches a valid NTU staff ID.
-     * Example: N1234567D or A7654321Z
+     * Checks if the given ID matches a valid NTU email account.
+     * Example: sng001@ntu.edu.sg
      */
     public boolean isValidNtuId(String id) {
         if (id == null) return false;
-        return NTU_ID_PATTERN.matcher(id.trim()).matches();
+        return NTU_ID_PATTERN.matcher(id.trim().toLowerCase()).matches();
     }
 
     /**
