@@ -56,7 +56,7 @@ public class ConsoleApp {
         // ===== Launch console UI =====
         ConsoleUI ui = new ConsoleUI(
                 authService, userService, opportunityService, applicationService, reportService,
-                userRepo, oppRepo, appRepo, reqRepo, idGen
+                userRepo, oppRepo, appRepo, reqRepo, idGen, validator
         );
         ui.start();
         System.out.println("Goodbye!");

@@ -1,5 +1,8 @@
 package control;
 
+import entity.domain.CareerCenterStaff;
+import entity.domain.CompanyRepresentative;
+import entity.domain.Student;
 import entity.domain.User;
 import repositories.UserRepository;
 
@@ -16,8 +19,6 @@ import repositories.UserRepository;
 
 
 public class AuthService {
-	
-	
 	// HI
 	//Attributes
 	private UserRepository userRepository;
@@ -42,8 +43,8 @@ public class AuthService {
 		
 		// Step 2: Check if user exists
 		if (user == null) {
-			System.out.println("No user found with ID: " + userId);
-			System.out.println("Please enter valid user ID!!");
+			System.out.println("\nNo user found with ID: " + userId);
+			System.out.println("Please enter valid user ID!");
 			return null;
 		}
 		
@@ -101,26 +102,25 @@ public class AuthService {
 	 // services/AuthService.java
 	    public void setupPasswordFirstTime(String userId, String newPwd) {
 	        User u = userRepository.findById(userId);
-
-	        // ✅ Double-check user existence
-	        if (u == null) {
-	            throw new IllegalArgumentException("User not found. Please check your User ID.");
-	        }
-
-	        // Prevent overwriting an existing password
-	        //if (u.getPassword() != null && !u.getPassword().isBlank()) {
-	         //   throw new IllegalStateException("Password already set. Use changePassword() instead.");
-	        //}
-
-	        //validatePwd(newPwd);
 	        u.setPassword(newPwd);
 	        userRepository.save(u);
 	    }
-
-	    
-
-
-		
-	
+		/**
+		 * Returns if an Id is associated with Student/Staff
+		 * @param uid userId
+		 * @return boolean true/false
+		 */
+		public boolean isStudentOrStaff(String uid){
+			User temp = userRepository.findById(uid);
+			if((temp instanceof Student) || (temp instanceof CareerCenterStaff)){
+				return true;
+			}
+			return false;
+		}
+		public CompanyRepresentative setupCompanyRepAccount(String userId, String username, String password,String companyName, String department, String position){
+			CompanyRepresentative r = new CompanyRepresentative(userId, username, password, companyName, department, position);
+			userRepository.save(r);
+			return r;
+		}
 }
 

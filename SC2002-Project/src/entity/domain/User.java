@@ -25,21 +25,30 @@ public abstract class User {
      * @return String userId
      */
     public String getUserId(){
-        return userId;
+        return this.userId;
     }
     /**
      * Retrieves String userName
      * @return String userName
      */
     public String getUserName(){
-        return userName;
+        return this.userName;
     }
+
     /**
      * Retrieves boolean isLoggedIn
      * @return Boolean isLoggedIn (login state) 
      */
     public boolean isLoggedIn(){
-        return isLoggedIn;
+        return this.isLoggedIn;
+    }
+
+    /**
+     * Retrieves String password
+     * @return String password
+     */
+    public String getPassword(){
+        return this.password;
     }
 
     /**
@@ -77,7 +86,7 @@ public abstract class User {
                 System.out.println("Invalid username or password!");
             }
         } catch (Exception e) {
-            System.out.println("Verifying password failed!");
+            System.out.println("Password verification failed!");
         }
         
     }

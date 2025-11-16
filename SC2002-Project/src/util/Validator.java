@@ -16,6 +16,7 @@ public class Validator {
 
     // ===== Methods =====
 
+    //[USELESS]
     /**
      * Checks if the given ID matches a valid student ID format.
      * Examples: S1234567A, U1234567B, S7654321
@@ -25,6 +26,7 @@ public class Validator {
         return STUDENT_ID_PATTERN.matcher(id.trim()).matches();
     }
 
+    //[USELESS]
     /**
      * Checks if the given ID matches a valid NTU staff ID.
      * Example: N1234567D or A7654321Z

@@ -47,6 +47,4 @@ public class IdGenerator {
     public void resetAll() {
         counters.clear();
     }
-
-    
 }

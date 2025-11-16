@@ -11,7 +11,7 @@ import control.*;
 import entity.domain.*;
 import entity.domain.enums.*;
 import repositories.*;
-import util.IdGenerator;
+import util.*;
 
 /**
  * Text-based interactive UI for Students, Company Reps, and Staff.
@@ -32,7 +32,7 @@ public class ConsoleUI {
     private final ApplicationRepository appRepo;
     private final RequestRepository reqRepo;
     private final IdGenerator ids;
-
+    private final Validator vdr;
     // per-session, per-user saved filters
     private final Map<String, OpportunityFilter> userFilters = new HashMap<>();
     private OpportunityFilter getFilterFor(String userId) {
@@ -42,7 +42,7 @@ public class ConsoleUI {
     public ConsoleUI(AuthService auth, UserService users, OpportunityService oppSvc,
                      ApplicationService appSvc, ReportService reportSvc,
                      UserRepository userRepo, OpportunityRepository oppRepo,
-                     ApplicationRepository appRepo, RequestRepository reqRepo, IdGenerator ids) {
+                     ApplicationRepository appRepo, RequestRepository reqRepo, IdGenerator ids, Validator vdr) {
         this.auth = auth;
         this.users = users;
         this.oppSvc = oppSvc;
@@ -53,13 +53,18 @@ public class ConsoleUI {
         this.appRepo = appRepo;
         this.reqRepo = reqRepo;
         this.ids = ids;
+        this.vdr = vdr;
     }
 
     public void start() {
         while (true) {
-            System.out.println("\n=== Internship Placement System ===");
+            String design = "=".repeat(46);
+            System.out.println(design);
+            System.out.println("\n=== Internship Placement Management System ===");
+            System.out.println(design);
+            System.out.println("\nNote: For first-time Students and Career Center Staff proceed to Login with the default password.\nNote: For first-time Company Representatives please Register for an account.\n");
             System.out.println("1) Login");
-            System.out.println("2) First-time setup (set password)");
+            System.out.println("2) Register");
             System.out.println("0) Exit");
             System.out.print("Choice: ");
             int choice = readInt();
@@ -67,14 +72,55 @@ public class ConsoleUI {
                 case 1 -> doLogin();
                 case 2 -> firstTimeSetup();
                 case 0 -> { return; }
-                default -> System.out.println("Invalid choice.");
+                default -> System.out.println("\n<<Invalid choice!>>");
             }
         }
     }
 
     private void doLogin() {
-        System.out.print("Enter User ID: ");
+        System.out.print("\nEnter User ID: ");
         String uid = sc.nextLine().trim();
+        User temp = userRepo.findById(uid);
+        if(auth.isStudentOrStaff(uid) && (temp.getPassword()=="password")){
+            System.out.print("Enter Full Name: ");
+            String name = sc.nextLine().trim().toLowerCase();
+            if(!temp.getUserName().toLowerCase().equals(name)){
+                System.out.println("\n<<Incorrect User ID or Full Name!>>\n<<Type your Full Name as in your Matrictulation Card.>>");
+                return;
+            }
+            System.out.print("Enter Default Password: ");
+            String default_pw = sc.nextLine();
+            if(!default_pw.equals("password")){
+                System.out.println("\n<<Incorrect default password! Try again later!>>");
+                return;
+            }
+            //First time change password
+            String new_pass,cfm_pass;
+            do{
+                System.out.println("\n=== Change password ===");
+                System.out.println("\nNote: Use a different password from default password.");
+                System.out.print("\nEnter New Password: ");
+                new_pass = sc.nextLine();
+                System.out.print("Confirm Password: ");
+                cfm_pass = sc.nextLine();
+                if(new_pass.equals("password")){
+                    System.out.println("\n<<Error: Enter a password different from default password.>>");
+                }
+                if(vdr.isNotBlank(new_pass)){
+                    System.out.println("\n<<Error: Enter a valid password.>>");
+                }
+                if ((!new_pass.equals(cfm_pass)) && (vdr.isNotBlank(new_pass))) {
+                    System.out.println("\n<<Error: Passwords do not match. Please try again.>>");
+                }
+            } while(!new_pass.equals(cfm_pass)||(new_pass.equals("")) || (!vdr.isNotBlank(new_pass)));
+
+            auth.setupPasswordFirstTime(uid, cfm_pass);
+            temp = auth.loginVerification(uid, cfm_pass);
+            System.out.println("Welcome, " + temp.getUserName() + "!");
+            if (temp instanceof Student s) studentMenu(s);
+            else if (temp instanceof CareerCenterStaff c) staffMenu(c);
+            auth.logout(temp);
+        }
         System.out.print("Enter Password: ");
         String pw = sc.nextLine().trim();
         try {
@@ -85,36 +131,50 @@ public class ConsoleUI {
             else if (u instanceof CareerCenterStaff c) staffMenu(c);
             auth.logout(u);
         } catch (Exception e) {
-            System.out.println("Login failed: " + e.getMessage());
+            //System.out.println("Login failed: " + e.getMessage());
         }
     }
 
-    // ===================== Student =====================
+    //Student
     private void studentMenu(Student s) {
         while (true) {
             System.out.println("\n[Student] " + s.getUserName());
-            System.out.println("1) View visible & eligible opportunities");
-            System.out.println("2) Apply to opportunity");
-            System.out.println("3) View my applications");
-            System.out.println("4) Accept successful application");
-            System.out.println("5) Request withdrawal");
-            System.out.println("6) Set filters / sort"); // NEW
+            System.out.println("1) Toggle visibility");
+            System.out.println("2) View visible & eligible opportunities");
+            System.out.println("3) Apply to opportunity");
+            System.out.println("4) View my applications");
+            System.out.println("5) Accept successful application");
+            System.out.println("6) Request withdrawal");
+            System.out.println("7) Set filters / sort");
             System.out.println("0) Logout");
             System.out.print("Choice: ");
             switch (readInt()) {
-                case 1 -> studentViewEligible(s);
-                case 2 -> studentApply(s);
-                case 3 -> studentViewApps(s);
-                case 4 -> studentAccept(s);
-                case 5 -> studentRequestWithdrawal(s);
-                case 6 -> editFiltersStudent(s);
-                case 0 -> { return; }
-                default -> System.out.println("Invalid choice.");
+                case 1:
+                    if(s.getVisibility()==true){
+                        s.setVisibility(false);
+                        System.out.println("*Visibility*: False");
+                    } else {
+                        s.setVisibility(true);
+                        System.out.println("*Visibility*: True");
+                    }
+                    break;
+                case 2: studentViewEligible(s);
+                case 3: studentApply(s);
+                case 4: studentViewApps(s);
+                case 5: studentAccept(s);
+                case 6: studentRequestWithdrawal(s);
+                case 7: editFiltersStudent(s);
+                case 0: { return; }
+                default: System.out.println("\n<<Invalid choice!>>");
             }
         }
     }
 
     private void studentViewEligible(Student s) {
+        if(!s.getVisibility()){
+            System.out.println("\n<<Toggle Visibility to True to proceed.>>");
+            return;
+        }
         OpportunityFilter f = getFilterFor(s.getUserId());
         List<InternshipOpportunity> list = oppSvc.listVisibleFor(s, f); // filtered + sorted (default TITLE_ASC)
         if (list.isEmpty()) {
@@ -126,6 +186,10 @@ public class ConsoleUI {
     }
 
     private void studentApply(Student s) {
+        if(!s.getVisibility()){
+            System.out.println("\n<<Toggle Visibility to True to proceed.>>");
+            return;
+        }
         OpportunityFilter f = getFilterFor(s.getUserId());
         List<InternshipOpportunity> list = oppSvc.listVisibleFor(s, f);
         if (list.isEmpty()) { System.out.println("No opportunities available."); return; }
@@ -195,7 +259,7 @@ public class ConsoleUI {
     private void editFiltersStudent(Student s) {
         OpportunityFilter f = getFilterFor(s.getUserId());
         while (true) {
-            System.out.println("\n--- Filters (Student) ---");
+            System.out.println("\n=== Filters (Student) ===");
             System.out.println("1) Status (current: " + f.getStatus() + ")");
             System.out.println("2) Preferred Major (current: " + f.getPreferredMajor() + ")");
             System.out.println("3) Level (current: " + f.getLevel() + ")");
@@ -240,7 +304,7 @@ public class ConsoleUI {
         }
     }
 
-    // ===================== Company Rep =====================
+    //Company Rep
     private void repMenu(CompanyRepresentative rep) {
         if (!rep.isApproved()) {
             System.out.println("Your account is not yet approved by Career Center Staff.");
@@ -336,7 +400,7 @@ public class ConsoleUI {
     private void editFiltersRep(CompanyRepresentative rep) {
         OpportunityFilter f = getFilterFor(rep.getUserId());
         while (true) {
-            System.out.println("\n--- Filters (Company Rep) ---");
+            System.out.println("\n=== Filters (Company Rep) ===");
             System.out.println("1) Status (current: " + f.getStatus() + ")");
             System.out.println("2) Preferred Major (current: " + f.getPreferredMajor() + ")");
             System.out.println("3) Level (current: " + f.getLevel() + ")");
@@ -376,12 +440,12 @@ public class ConsoleUI {
                     return;
                 }
                 case 0 -> { return; }
-                default -> System.out.println("Invalid choice.");
+                default -> System.out.println("<<Invalid choice.>>");
             }
         }
     }
 
-    // ===================== Staff =====================
+    //Staff
     private void staffMenu(CareerCenterStaff staff) {
         while (true) {
             System.out.println("\n[Career Center Staff] " + staff.getUserName());
@@ -482,7 +546,7 @@ public class ConsoleUI {
     private void editFiltersStaff(CareerCenterStaff staff) {
         OpportunityFilter f = getFilterFor(staff.getUserId());
         while (true) {
-            System.out.println("\n--- Filters (Staff) ---");
+            System.out.println("\n=== Filters (Staff) ===");
             System.out.println("1) Status (current: " + f.getStatus() + ")");
             System.out.println("2) Preferred Major (current: " + f.getPreferredMajor() + ")");
             System.out.println("3) Level (current: " + f.getLevel() + ")");
@@ -527,7 +591,7 @@ public class ConsoleUI {
         }
     }
 
-    // ===================== Helpers =====================
+    //Helpers
     private int readInt() {
         while (true) {
             String s = sc.nextLine().trim();
@@ -537,7 +601,7 @@ public class ConsoleUI {
     }
 
     private void printOpps(List<InternshipOpportunity> list) {
-        System.out.println("--- Opportunities ---");
+        System.out.println("=== Opportunities ===");
         for (InternshipOpportunity o : list) {
             System.out.printf("ID=%s | %s | %s | Level=%s | Status=%s | Visible=%s | Slots=%d | Window=%s..%s%n",
                     o.getId(), o.getTitle(), o.getCompanyName(), o.getLevel(), o.getStatus(), o.isVisibility(),
@@ -556,30 +620,57 @@ public class ConsoleUI {
     }
 
     private void firstTimeSetup() {
-        System.out.print("Enter your User ID: ");
+        System.out.println("\n=== Registration for Company Representative account ===");
+        System.out.print("\nEnter your User ID(Company Email): ");
         String uid = sc.nextLine().trim();
 
         User existingUser = userRepo.findById(uid);
-        if (existingUser == null) {
-            System.out.println("❌ User ID not found. Please contact the Career Center Staff.");
+        if(auth.isStudentOrStaff(uid)){
+            System.out.println("\nFor first-time Student and Career Center Staff, Login with the default password.");
+            return;
+        }
+        if (existingUser != null) {
+            System.out.println("\n<<An existing User with that User ID exists.>>");
+            return;
+        }
+        if(!vdr.isValidCompanyEmail(uid)){
+            System.out.println("\n<<Enter a valid company email.>>");
             return;
         }
 
-        System.out.print("Enter new password: ");
-        String p1 = sc.nextLine().trim();
-        System.out.print("Confirm new password: ");
-        String p2 = sc.nextLine().trim();
+        System.out.print("Enter Company Name: ");
+        String comp_name = sc.nextLine().trim();
 
-        if (!p1.equals(p2)) {
-            System.out.println("❌ Passwords do not match.");
-            return;
-        }
+        System.out.print("Enter Full Name: ");
+        String name = sc.nextLine().trim();
+
+        System.out.print("Enter Department: ");
+        String dept = sc.nextLine().trim();
+
+        System.out.print("Enter Position: ");
+        String pos = sc.nextLine().trim();
+
+        String p1, p2;
+        do{
+            System.out.print("Enter Password: ");
+            p1 = sc.nextLine().trim();
+            System.out.print("Confirm Password: ");
+            p2 = sc.nextLine().trim();
+            if(p1.equals("")){
+                System.out.println("\n<<Error: Enter a valid password.>>");
+            }
+            if ((!p1.equals(p2)) && (!p1.equals(""))) {
+                System.out.println("\n<<Error: Passwords do not match.>>");
+            }
+        } while((!p1.equals(p2)) || (p1.equals("")));
 
         try {
-            auth.setupPasswordFirstTime(uid, p1);
-            System.out.println("✅ Password set successfully. You can now login.");
+            CompanyRepresentative r = auth.setupCompanyRepAccount(uid, name, p2, comp_name, dept, pos);
+            RegistrationRequest req = new RegistrationRequest(r);
+            reqRepo.save(req);
+            System.out.println("\nAccount created Successfully. You can now Login.");
         } catch (Exception e) {
-            System.out.println("❌ Setup failed: " + e.getMessage());
+            System.out.println("\n<<Setup failed: %s >>" + e.getMessage());
         }
     }
 }

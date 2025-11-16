@@ -133,11 +133,7 @@ public class Student extends User {
             return;
         }
 
-        Application newApp = new Application(
-                "A" + (myApps.size() + 1), // Simplified; can use IdGenerator in real implementation
-                this,
-                opp
-        );
+        Application newApp = new Application(this,opp);
 
         appRepo.save(newApp);
         System.out.println(getUserName() + " applied for " + opp.getTitle());

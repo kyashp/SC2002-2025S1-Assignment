@@ -177,7 +177,5 @@ public class ApplicationService {
         opportunityRepository.save(opp);
         applicationRepository.save(app);
     }
-
-
 }
 

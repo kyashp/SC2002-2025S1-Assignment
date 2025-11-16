@@ -5,11 +5,12 @@ import java.util.Objects;
 
 
 import entity.domain.enums.RequestStatus;
+import util.IdGenerator;
 
 public class RegistrationRequest {
 	 // ===== Attributes =====
-	
-	private String id;
+	private static final IdGenerator idGen = new IdGenerator();
+	private final String id =  idGen.newId("REG");
     private CompanyRepresentative rep;
     private RequestStatus status;
     private LocalDateTime requestedAt;
@@ -19,8 +20,8 @@ public class RegistrationRequest {
         // Default constructor for flexibility
     }
     
-    public RegistrationRequest(String id, CompanyRepresentative rep) {
-        this.id = id;
+    public RegistrationRequest(CompanyRepresentative rep) {
+
         this.rep = rep;
         this.status = RequestStatus.PENDING;
         this.requestedAt = LocalDateTime.now();
@@ -29,10 +30,6 @@ public class RegistrationRequest {
  // ===== Getters & Setters =====
     public String getId() {
         return id;
-    }
-    
-    public void setId(String id) {
-        this.id = id;
     }
 
     public CompanyRepresentative getRep() {

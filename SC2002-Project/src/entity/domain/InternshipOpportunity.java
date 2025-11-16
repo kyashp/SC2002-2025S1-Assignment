@@ -166,7 +166,7 @@ public class InternshipOpportunity {
             return null;
         }
 
-        Application app = new Application("A-" + (applications.size() + 1), student, this);
+        Application app = new Application(student, this);
         applications.add(app);
         System.out.println(student.getUserName() + " applied to " + title);
         return app;

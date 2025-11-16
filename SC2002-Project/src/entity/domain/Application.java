@@ -28,8 +28,7 @@ public class Application {
         // Default constructor 
     }
 
-    public Application(String id, Student student, InternshipOpportunity opportunity) {
-    
+    public Application(Student student, InternshipOpportunity opportunity) {
         this.student = student;
         this.opportunity = opportunity;
         this.appliedAt = LocalDateTime.now();
