@@ -127,13 +127,36 @@ public class CompanyRepresentative extends User{
     }
     
     /**
-     * Returns a list of all opportunities created by this representative.
-     * @param oppRepo OpportunityRepository
-     * @return List of opportunities within the company
+     * Returns a list of all opportunities created under this representative's company.
      */
     public List<InternshipOpportunity> listMyOpportunities(OpportunityRepository oppRepo) {
         Objects.requireNonNull(oppRepo, "OpportunityRepository required");
         return oppRepo.findByCompany(companyName);
+    }
+
+    /**
+     * Deletes an opportunity if it belongs to this representative.
+     * @return true if deletion succeeded, false otherwise.
+     */
+    public boolean deleteOpportunity(String opportunityId, OpportunityRepository oppRepo) {
+        Objects.requireNonNull(oppRepo, "OpportunityRepository required");
+        if (opportunityId == null || opportunityId.isBlank()) {
+            return false;
+        }
+
+        InternshipOpportunity opp = oppRepo.findById(opportunityId);
+        if (opp == null ||
+                opp.getRepInCharge() == null ||
+                !opp.getRepInCharge().getUserId().equalsIgnoreCase(getUserId())) {
+            System.out.println("Cannot delete an opportunity you did not create.");
+            return false;
+        }
+
+        boolean deleted = oppRepo.delete(opp);
+        if (deleted) {
+            System.out.println("Deleted opportunity: " + opp.getTitle());
+        }
+        return deleted;
     }
     
     /**

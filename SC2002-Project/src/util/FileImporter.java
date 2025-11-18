@@ -83,7 +83,8 @@ public class FileImporter {
 
     /**
      * Imports company representative records from a CSV/Excel file.
-     * Expected format: userId,name,password,companyName,department,position
+     * Supports both legacy (userId,name,password,company,dept,position) and new
+     * (CompanyRepID,Name,CompanyName,Department,Position,Email,Status) formats.
      */
     public static List<String []> importCompanyReps(File file) {
         List<String []> reps = new ArrayList<>();
@@ -95,6 +96,7 @@ public class FileImporter {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             boolean header = true;
+            boolean newFormat = false;
             while ((line = br.readLine()) != null) {
                 if (header) { header = false; continue; }
                 String[] t = line.split("[,\\t]");
@@ -104,5 +106,13 @@ public class FileImporter {
             System.err.println("Error reading company reps file: " + e.getMessage());
         }
         return reps;
+    }
+
+    private String safeToken(String[] tokens, int index) {
+        if (index < 0 || index >= tokens.length) {
+            return "";
+        }
+        String value = tokens[index];
+        return value == null ? "" : value.trim();
     }
 }
