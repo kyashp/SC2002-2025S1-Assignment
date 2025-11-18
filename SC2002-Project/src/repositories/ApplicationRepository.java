@@ -101,7 +101,7 @@ public class ApplicationRepository {
     }
 
     /**
-     * Returns a copy of all applications (for testing/debug) 
+     * Returns a copy of all applications (for testing/debug) hi 
      */
     public List<Application> findAll() {
         return new ArrayList<>(applications);
