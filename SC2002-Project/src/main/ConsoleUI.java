@@ -123,6 +123,9 @@ public class ConsoleUI {
             auth.setupPasswordFirstTime(uid, cfm_pass);
             temp = auth.loginVerification(uid, cfm_pass);
             System.out.println("Welcome, " + temp.getUserName() + "!");
+            System.out.println("---------------------------------------");
+            System.out.println("Notifications: No Notifications");
+            System.out.println("---------------------------------------");
             if (temp instanceof Student s) studentMenu(s);
             if (temp instanceof CareerCenterStaff c) staffMenu(c);
             auth.logout(temp);
@@ -149,12 +152,13 @@ public class ConsoleUI {
             System.out.println("---------------------------------------");
 
             u.setLastNotifCheck(LocalDateTime.now());
+            userRepo.save(u);
             if (u instanceof Student s) studentMenu(s);
             else if (u instanceof CompanyRepresentative r) repMenu(r);
             else if (u instanceof CareerCenterStaff c) staffMenu(c);
             auth.logout(u);
         } catch (Exception e) {
-            System.out.println("Login failed: " + e.getMessage());
+            //System.out.println("Login failed: " + e.getMessage());
         }
     }
 
