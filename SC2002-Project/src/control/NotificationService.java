@@ -95,9 +95,8 @@ public class NotificationService{
                     String studentId = withdrawalReq.getRequestedBy().getUserId();
                     // Check if this opportunity belongs to the current Company Representative's list
                     if (myOpps.contains(linkedOpp)) {
-                        // Check if the request is still pending (meaning it needs the rep's attention)
                         if (withdrawalReq.getStatus() != RequestStatus.REJECTED) {
-                            notes.add("Application Withdrawal: Student: "+ studentId + "is withdrawing" + " for " + linkedOpp.getTitle() + "Status: " + withdrawalReq.getStatus().toString());
+                            notes.add("Application Withdrawal Updates: Student: " + studentId + " is withdrawing for " + linkedOpp.getTitle() + " | Status: " + withdrawalReq.getStatus().toString());
                         }
                     }
                 }
