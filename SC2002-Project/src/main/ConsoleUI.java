@@ -664,7 +664,7 @@ public class ConsoleUI {
             p1 = sc.nextLine().trim();
             System.out.print("Confirm Password: ");
             p2 = sc.nextLine().trim();
-            if(p1.equals("")){
+            if(!vdr.isNotBlank(p1)){
                 System.out.println("\n<<Error: Enter a valid password.>>");
             }
             if ((!p1.equals(p2)) && (!p1.equals(""))) {
