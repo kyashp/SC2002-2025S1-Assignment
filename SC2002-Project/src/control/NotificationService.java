@@ -82,7 +82,7 @@ public class NotificationService{
             // 2. Opportunity Approval/Rejection (Check if their opportunities were updated)
             for (InternshipOpportunity opp : myOpps) {
                 if (opp.getLastUpdated().isAfter(lastCheckTime) && opp.getStatus() != OpportunityStatus.PENDING) {
-                    notes.add("- Opportunity Status Update");
+                    notes.add("- Internship Opportunity Status Update");
                 }
             }
             // 3. Application Withdrawal Updates
