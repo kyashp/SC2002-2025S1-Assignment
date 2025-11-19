@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import entity.domain.User;
+import entity.domain.enums.RequestStatus;
 import entity.domain.CompanyRepresentative;
 import entity.domain.Student;
 
@@ -71,7 +72,7 @@ public class UserRepository {
 	public List<CompanyRepresentative> findAllCompanyRepsPending(){
 		List<CompanyRepresentative> result = new ArrayList<>();
 		for (User user : users) {
-			if (user instanceof CompanyRepresentative rep && !rep.isApproved()) {
+			if (user instanceof CompanyRepresentative rep && (rep.isApproved()==RequestStatus.PENDING)) {
 				result.add(rep);
 			}
 		}

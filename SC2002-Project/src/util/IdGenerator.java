@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
- * <<utility>> IdGenerator
+ * <<Utility>> IdGenerator
  * Generates unique incremental IDs with a given prefix.
  * Thread-safe for use across different services.
  *

@@ -5,7 +5,7 @@ import entity.domain.CompanyRepresentative;
 import entity.domain.Student;
 import entity.domain.User;
 import repositories.UserRepository;
-
+import util.CSVFileWriter;
 
 /**
  * AuthService is a service (control) class responsible for
@@ -120,6 +120,8 @@ public class AuthService {
 		public CompanyRepresentative setupCompanyRepAccount(String userId, String username, String password,String companyName, String department, String position){
 			CompanyRepresentative r = new CompanyRepresentative(userId, username, password, companyName, department, position);
 			userRepository.save(r);
+			String message = CSVFileWriter.repToWriteString(r);
+			CSVFileWriter.writeToFile("data/sample_company_representative_list.csv", message);
 			return r;
 		}
 }

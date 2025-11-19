@@ -5,6 +5,7 @@ import java.util.Objects;
 import control.ReportService;
 import entity.domain.enums.OpportunityStatus;
 import entity.domain.enums.RequestStatus;
+import util.CSVFileWriter;
 
 /**
  * Represents a Career Center Staff member in the internship placement system.
@@ -48,7 +49,8 @@ public class CareerCenterStaff extends User {
     public void approveCompanyRep(RegistrationRequest req) {
         Objects.requireNonNull(req, "RegistrationRequest required");
         req.setStatus(RequestStatus.APPROVED);
-        req.getRep().setApproved(true);
+        req.getRep().setApproved(RequestStatus.APPROVED);
+        CSVFileWriter.writeRepStatus("data/sample_company_representative_list.csv", req.getRep().getUserId(), RequestStatus.APPROVED.toString());
         System.out.println("Approved company representative: " + req.getRep().getUserName());
     }
 
@@ -59,7 +61,8 @@ public class CareerCenterStaff extends User {
     public void rejectCompanyRep(RegistrationRequest req) {
         Objects.requireNonNull(req, "RegistrationRequest required");
         req.setStatus(RequestStatus.REJECTED);
-        req.getRep().setApproved(false);
+        req.getRep().setApproved(RequestStatus.REJECTED);
+        CSVFileWriter.writeRepStatus("data/sample_company_representative_list.csv", req.getRep().getUserId(), RequestStatus.REJECTED.toString());
         System.out.println("Rejected company representative: " + req.getRep().getUserName());
     }
 

@@ -2,7 +2,7 @@ package util;
 
 import org.mindrot.jbcrypt.*;
 /**
- * Utility class for hashing and verifying passwords using the BCrypt algorithm.
+ * <<Utility>> Class for hashing and verifying passwords using the BCrypt algorithm.
  * Requires the jBCrypt library to be included in the project's classpath.
  */
 public class PasswordHasher {

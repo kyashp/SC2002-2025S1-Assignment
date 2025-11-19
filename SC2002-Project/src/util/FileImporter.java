@@ -5,24 +5,18 @@ import java.util.*;
 
 import entity.domain.Student;
 import entity.domain.CareerCenterStaff;
-import entity.domain.CompanyRepresentative;
-import entity.domain.RegistrationRequest;
-import entity.domain.enums.RequestStatus;
 import repositories.UserRepository;
-import repositories.RequestRepository;
 
 /**
- * <<utility>> FileImporter
+ * <<Utility>> FileImporter
  * Reads CSV/Excel-like data files and converts them into model objects.
  */
 public class FileImporter {
 
     private final UserRepository userRepository;
-    private final RequestRepository requestRepository;
 
-    public FileImporter(UserRepository userRepository, RequestRepository requestRepository) {
+    public FileImporter(UserRepository userRepository) {
         this.userRepository = Objects.requireNonNull(userRepository, "UserRepository required");
-        this.requestRepository = Objects.requireNonNull(requestRepository, "RequestRepository required");
     }
 
     /**
@@ -91,8 +85,8 @@ public class FileImporter {
      * Imports company representative records from a CSV/Excel file.
      * Expected format: userId,name,password,companyName,department,position
      */
-    public List<CompanyRepresentative> importCompanyReps(File file) {
-        List<CompanyRepresentative> reps = new ArrayList<>();
+    public static List<String []> importCompanyReps(File file) {
+        List<String []> reps = new ArrayList<>();
         if (file == null || !file.exists()) {
             System.out.println("File not found: " + file);
             return reps;
@@ -104,25 +98,8 @@ public class FileImporter {
             while ((line = br.readLine()) != null) {
                 if (header) { header = false; continue; }
                 String[] t = line.split("[,\\t]");
-                if (t.length < 6) continue;
-
-                String id = t[0].trim(), name = t[1].trim(), password = t[2].trim();
-                String company = t[3].trim(), dept = t[4].trim(), position = t[5].trim();
-
-                CompanyRepresentative rep = new CompanyRepresentative(id, name, password, company, dept, position);
-                rep.setApproved(false); // new reps are not approved initially
-                userRepository.save(rep);
-                reps.add(rep);
-
-                // create corresponding registration request
-                RegistrationRequest req = new RegistrationRequest();
-                req.setRep(rep);
-                req.setStatus(RequestStatus.PENDING);
-                req.setRequestedAt(java.time.LocalDateTime.now());
-                requestRepository.save(req);
+                reps.add(t);
             }
-
-            System.out.println("Imported " + reps.size() + " company reps from " + file.getName());
         } catch (IOException e) {
             System.err.println("Error reading company reps file: " + e.getMessage());
         }

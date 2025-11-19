@@ -19,7 +19,7 @@ public class ConsoleApp {
 
         IdGenerator idGen = new IdGenerator();
         Validator validator = new Validator();
-        FileImporter importer = new FileImporter(userRepo, reqRepo);
+        FileImporter importer = new FileImporter(userRepo);
 
         AuthService authService = new AuthService(userRepo);
         UserService userService = new UserService(userRepo, reqRepo, importer);
@@ -31,13 +31,13 @@ public class ConsoleApp {
         try {
             File s = new File("sample_student_list.csv");
             File st = new File("sample_staff_list.csv");
-            File r = new File("sample_company_representative_list.csv");
+
             if (!s.exists()) s = new File("data/sample_student_list.csv");
             if (!st.exists()) st = new File("data/sample_staff_list.csv");
-            if (!r.exists()) r = new File("data/sample_company_representative_list.csv");
+
             if (s.exists()) importer.importStudents(s);
             if (st.exists()) importer.importStaff(st);
-            if (r.exists()) importer.importCompanyReps(r);
+
         } catch (Exception e) {
             System.err.println("CSV import warning: " + e.getMessage());
         }

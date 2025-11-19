@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import entity.domain.enums.OpportunityStatus;
+import entity.domain.enums.RequestStatus;
 import repositories.OpportunityRepository;
 import repositories.ApplicationRepository;
 
@@ -16,7 +17,7 @@ public class CompanyRepresentative extends User{
     private String companyName;
     private String department;
     private String position;
-    private boolean isApproved;
+    private RequestStatus isApproved;
 
     /**
      * Constructs a new Company Representative object with inputs
@@ -34,7 +35,7 @@ public class CompanyRepresentative extends User{
 		this.companyName = companyName;
 		this.department = department;
 		this.position = position;
-		this.isApproved = false; // Default: unapproved until staff approval
+		this.isApproved = RequestStatus.PENDING; // Default: unapproved until staff approval
     }
     
     /**
@@ -90,7 +91,7 @@ public class CompanyRepresentative extends User{
      * Retrieves status of account approval
      * @return boolean isApproved;
      */
-    public boolean isApproved() {
+    public RequestStatus isApproved() {
         return isApproved;
     }
 
@@ -98,7 +99,7 @@ public class CompanyRepresentative extends User{
      * Sets status of account approval
      * @param approved boolean approved;
      */
-    public void setApproved(boolean approved) {
+    public void setApproved(RequestStatus approved) {
         this.isApproved = approved;
     }
 

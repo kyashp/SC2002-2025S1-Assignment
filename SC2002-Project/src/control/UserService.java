@@ -61,7 +61,7 @@ public class UserService {
 	        Objects.requireNonNull(rep, "rep required");
 
 	        // ensure reps start unapproved
-	        rep.setApproved(false);
+	        rep.setApproved(RequestStatus.PENDING);
 	        userRepository.save(rep);
 
 	        RegistrationRequest req = new RegistrationRequest();
@@ -82,7 +82,7 @@ public class UserService {
 		 req.setStatus(RequestStatus.APPROVED);
 		 requestRepository.save(req);
 		 
-		 rep.setApproved(true);
+		 rep.setApproved(RequestStatus.APPROVED);
 		 userRepository.save(rep);
 		 
 	 }

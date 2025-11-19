@@ -111,7 +111,7 @@ public class ConsoleUI {
                 if(new_pass.equals("password")){
                     System.out.println("\n<<Error: Enter a password different from default password.>>");
                 }
-                if(vdr.isNotBlank(new_pass)){
+                if(!vdr.isNotBlank(new_pass)){
                     System.out.println("\n<<Error: Enter a valid password.>>");
                 }
                 if ((!new_pass.equals(cfm_pass)) && (vdr.isNotBlank(new_pass))) {
@@ -123,8 +123,9 @@ public class ConsoleUI {
             temp = auth.loginVerification(uid, cfm_pass);
             System.out.println("Welcome, " + temp.getUserName() + "!");
             if (temp instanceof Student s) studentMenu(s);
-            else if (temp instanceof CareerCenterStaff c) staffMenu(c);
+            if (temp instanceof CareerCenterStaff c) staffMenu(c);
             auth.logout(temp);
+            return;
         }
         System.out.print("Enter Password: ");
         String pw = sc.nextLine().trim();
@@ -136,7 +137,7 @@ public class ConsoleUI {
             else if (u instanceof CareerCenterStaff c) staffMenu(c);
             auth.logout(u);
         } catch (Exception e) {
-            //System.out.println("Login failed: " + e.getMessage());
+            System.out.println("Login failed: " + e.getMessage());
         }
     }
 
@@ -311,12 +312,14 @@ public class ConsoleUI {
 
     //Company Rep
     private void repMenu(CompanyRepresentative rep) {
-        if (!rep.isApproved()) {
+        if (rep.isApproved()==RequestStatus.PENDING) {
             System.out.println("Your account is not yet approved by Career Center Staff.");
         }
+        if(rep.isApproved()==RequestStatus.REJECTED){
+            System.out.println("Your account is rejected by Career Center Staff.\n Contact Career Center.");
+        }
         while (true) {
-            System.out.println("\n[Company Rep] " + rep.getUserName() + " @ " + rep.getCompanyName() +
-                    (rep.isApproved() ? " (APPROVED)" : " (PENDING)"));
+            System.out.println("\n[Company Rep] " + rep.getUserName() + " @ " + rep.getCompanyName() + "(" + rep.isApproved().toString() + ")");
             System.out.println("1) Create opportunity (draft)");
             System.out.println("2) List my opportunities");
             System.out.println("3) Toggle visibility");
@@ -337,7 +340,7 @@ public class ConsoleUI {
     }
 
     private void repCreateOpp(CompanyRepresentative rep) {
-        if (!rep.isApproved()) { System.out.println("Cannot create until approved."); return; }
+        if (!(rep.isApproved()==RequestStatus.APPROVED)) { System.out.println("Cannot create until approved."); return; }
         System.out.print("Title: "); String title = sc.nextLine().trim();
         System.out.print("Description: "); String desc = sc.nextLine().trim();
         System.out.print("Preferred Major (blank=any): "); String major = sc.nextLine().trim();

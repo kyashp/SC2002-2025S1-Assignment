@@ -63,7 +63,7 @@ public class RegistrationRequest {
      */
     public void approve() {
         this.status = RequestStatus.APPROVED;
-        if (rep != null) rep.setApproved(true);
+        if (rep != null) rep.setApproved(RequestStatus.APPROVED);
     }
 
     /**
@@ -71,7 +71,7 @@ public class RegistrationRequest {
      */
     public void reject() {
         this.status = RequestStatus.REJECTED;
-        if (rep != null) rep.setApproved(false);
+        if (rep != null) rep.setApproved(RequestStatus.REJECTED);
     }
 
     @Override

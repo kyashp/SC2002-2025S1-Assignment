@@ -1,3 +1,5 @@
 CompanyRepID,Name,CompanyName,Department,Position,Email,Status
-1,Yash,Random,Software,HR,yash@hrt.com,
-2,Aniket,Random,Software,HR,aniket@janestreet.com,
+1,a,a,a,a,aniket@hrt.com,APPROVED
+2,y,y,y,y,yash@janestreet.com,APPROVED
+3,a,a,a,a,aasim@citadel.com,APPROVED
+4,p,pp,p,p,santhosh@pp.com,REJECTED
