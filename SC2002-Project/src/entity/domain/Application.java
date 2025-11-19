@@ -22,7 +22,7 @@ public class Application {
     private LocalDateTime appliedAt;
     private ApplicationStatus status;
     private boolean withdrawalRequested;
-
+    private LocalDateTime lastUpdated = LocalDateTime.now();
     // ===== Constructors =====
     public Application() {
         // Default constructor 
@@ -73,6 +73,11 @@ public class Application {
 
     public void setStatus(ApplicationStatus status) {
         this.status = status;
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    public LocalDateTime getLastUpdated(){
+        return lastUpdated;
     }
 
     public boolean isWithdrawalRequested() {

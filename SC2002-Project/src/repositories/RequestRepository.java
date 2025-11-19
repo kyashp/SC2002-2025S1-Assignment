@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import entity.domain.RegistrationRequest;
+import entity.domain.Student;
 import entity.domain.WithdrawalRequest;
 import entity.domain.enums.RequestStatus;
 
@@ -38,7 +39,9 @@ public class RequestRepository {
             throw new IllegalArgumentException("Unsupported request type: " + req.getClass().getSimpleName());
         }
     }
-
+    public List<WithdrawalRequest> findAllWithdrawals(){
+        return this.withdrawalRequests;
+    }
     /**
      * Finds all pending WithdrawalRequests.
      * @return pending list (Withdrawals)
@@ -93,6 +96,21 @@ public class RequestRepository {
         return null;
     }
 
+    /**
+     * Find all withdrawal requests of a student
+     * @param student Student
+     * @return List of withdrawal requests
+     */
+    public List<WithdrawalRequest> findByStudent(Student student) {
+        Objects.requireNonNull(student, "Student required");
+        List<WithdrawalRequest> requests = new ArrayList<>();
+        for (WithdrawalRequest req : withdrawalRequests) {
+            if (req.getRequestedBy().equals(student)) {
+                requests.add(req);
+            }
+        }
+        return requests;
+    }
     /**
      * Empty all requests
      */

@@ -1,6 +1,7 @@
 package entity.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,7 +27,7 @@ public class InternshipOpportunity {
     private int slots;
     private boolean visibility;
     private final List<Application> applications = new ArrayList<>();
-    
+    private LocalDateTime lastUpdated;
     // ===== Constructors =====
     public InternshipOpportunity() {
         // Default constructor
@@ -48,6 +49,7 @@ public class InternshipOpportunity {
         this.visibility = false;
         this.openDate = LocalDate.now();
         this.closeDate = LocalDate.now().plusMonths(1); // default 1-month window
+        this.lastUpdated = LocalDateTime.now();
     }
     
  // ===== Getters & Setters =====
@@ -113,6 +115,11 @@ public class InternshipOpportunity {
 
     public void setStatus(OpportunityStatus status) {
         this.status = status;
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return this.lastUpdated;
     }
 
     public String getCompanyName() {
@@ -187,8 +194,8 @@ public class InternshipOpportunity {
 
         boolean approvedAndVisible = (status == OpportunityStatus.APPROVED && visibility);
         boolean eligibleByYear = (student.getYear() >= 3) || (level == InternshipLevel.BASIC);
-
-        return withinDate && approvedAndVisible && eligibleByYear;
+        boolean eligibleByMajor = (student.getMajor().trim().toLowerCase() == this.getPreferredMajor().trim().toLowerCase());
+        return withinDate && approvedAndVisible && eligibleByYear && eligibleByMajor;
     }
 
     /**

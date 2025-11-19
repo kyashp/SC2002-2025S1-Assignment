@@ -1,4 +1,6 @@
 package entity.domain;
+import java.time.LocalDateTime;
+
 import util.*;
 /**
  * Represents the abstract parent class for the 3 distinct users: Student, Company Representative and Career Centre Staff
@@ -8,6 +10,7 @@ public abstract class User {
     private String userName;
     private String password;
     private boolean isLoggedIn;
+    private LocalDateTime lastNotifCheck;
 
     /**
      * Contructs a new user object with distinct userId, default password for a new user is "password"
@@ -18,6 +21,7 @@ public abstract class User {
         this.userName = userName;
         this.password = "password";
         this.isLoggedIn = false;
+        this.lastNotifCheck = LocalDateTime.now();
     }
 
     /**
@@ -70,7 +74,20 @@ public abstract class User {
     public void setLoggedIn(boolean isLoggedIn){
         this.isLoggedIn = isLoggedIn;
     }
-
+    /**
+     * Retrieves the last time notification was retrieved
+     * @return
+     */
+    public LocalDateTime getLastNotifCheck() {
+        return lastNotifCheck;
+    }
+    /**
+     * Sets the lastNotifCheck
+     * @param lastNotifCheck long lastNotifCheck
+     */
+    public void setLastNotifCheck(LocalDateTime lastNotifCheck) {
+        this.lastNotifCheck = lastNotifCheck;
+    }
     /**
      * Simulates login for a user
      * @param inputPassword The plaintext input password entered by user
@@ -102,4 +119,5 @@ public abstract class User {
             System.out.println("User is already logged out.");
         }
     }
+    
 }

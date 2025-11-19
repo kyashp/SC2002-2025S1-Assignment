@@ -15,7 +15,7 @@ public class WithdrawalRequest {
     private RequestStatus status;
     private LocalDateTime requestedAt;
     private String reason;
-
+    private LocalDateTime lastUpdated;
     /**
      * Default constructor
      */
@@ -35,6 +35,7 @@ public class WithdrawalRequest {
         this.reason = reason;
         this.status = RequestStatus.PENDING;
         this.requestedAt = LocalDateTime.now();
+        this.lastUpdated = LocalDateTime.now();
     }
 
     /**
@@ -99,6 +100,15 @@ public class WithdrawalRequest {
      */
     public void setStatus(RequestStatus status) {
         this.status = status;
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    /**
+     * Retrieves the lastUpdated time
+     * @return lastUpdated LocalDateTime
+     */
+    public LocalDateTime getLastUpdated(){
+        return this.lastUpdated;
     }
 
     /**
