@@ -164,12 +164,12 @@ public class ConsoleUI {
                         System.out.println("*Visibility*: True");
                     }
                     break;
-                case 2: studentViewEligible(s);
-                case 3: studentApply(s);
-                case 4: studentViewApps(s);
-                case 5: studentAccept(s);
-                case 6: studentRequestWithdrawal(s);
-                case 7: editFiltersStudent(s);
+                case 2: studentViewEligible(s); break;
+                case 3: studentApply(s); break;
+                case 4: studentViewApps(s); break;
+                case 5: studentAccept(s); break;
+                case 6: studentRequestWithdrawal(s); break;
+                case 7: editFiltersStudent(s); break;
                 case 0: { return; }
                 default: System.out.println("\n<<Invalid choice!>>");
             }
