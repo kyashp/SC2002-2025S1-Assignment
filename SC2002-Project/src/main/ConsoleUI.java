@@ -181,12 +181,12 @@ public class ConsoleUI {
                         System.out.println("*Visibility*: True");
                     }
                     break;
-                case 2: studentViewEligible(s);
-                case 3: studentApply(s);
-                case 4: studentViewApps(s);
-                case 5: studentAccept(s);
-                case 6: studentRequestWithdrawal(s);
-                case 7: editFiltersStudent(s);
+                case 2: studentViewEligible(s); break;
+                case 3: studentApply(s); break;
+                case 4: studentViewApps(s); break;
+                case 5: studentAccept(s); break;
+                case 6: studentRequestWithdrawal(s); break;
+                case 7: editFiltersStudent(s); break;
                 case 0: { return; }
                 default: System.out.println("\n<<Invalid choice!>>");
             }
@@ -342,6 +342,7 @@ public class ConsoleUI {
             System.out.println("3) Toggle visibility");
             System.out.println("4) Review applications for an opportunity");
             System.out.println("5) Set filters / sort"); // NEW
+            System.out.println("6) Delete opportunity");
             System.out.println("0) Logout");
             System.out.print("Choice: ");
             switch (readInt()) {
@@ -350,6 +351,7 @@ public class ConsoleUI {
                 case 3 -> repToggleVisibility(rep);
                 case 4 -> repReviewApps(rep);
                 case 5 -> editFiltersRep(rep);
+                case 6 -> repDeleteOpp(rep);
                 case 0 -> { return; }
                 default -> System.out.println("Invalid choice.");
             }
@@ -420,6 +422,22 @@ public class ConsoleUI {
         appRepo.save(target);
         oppSvc.updateFilledStatus(opp);
         oppRepo.save(opp);
+    }
+
+    private void repDeleteOpp(CompanyRepresentative rep) {
+        List<InternshipOpportunity> list = oppRepo.findByRepresentative(rep);
+        if (list.isEmpty()) {
+            System.out.println("No opportunities.");
+            return;
+        }
+        printOpps(list);
+        System.out.print("Enter Opportunity ID to delete: ");
+        String oid = sc.nextLine().trim();
+        if (rep.deleteOpportunity(oid, oppRepo)) {
+            System.out.println("Opportunity removed.");
+        } else {
+            System.out.println("Deletion failed.");
+        }
     }
 
     private void editFiltersRep(CompanyRepresentative rep) {

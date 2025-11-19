@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import entity.domain.CompanyRepresentative;
 import entity.domain.InternshipOpportunity;
 import entity.domain.ReportFilter;
 import entity.domain.enums.OpportunityStatus;
+import entity.domain.enums.InternshipLevel;
 
 /** 
  * <<Repository>> OpportunityRepository
@@ -115,15 +117,39 @@ public class OpportunityRepository {
     
     /**
      * Returns all opportunities stored (for testing or reports).
-     * @return List of all InternshipOpportunities
      */
     public List<InternshipOpportunity> findAll() {
         return new ArrayList<>(opportunities);
     }
+
+    /**
+     * Returns all opportunities created by a specific representative.
+     */
+    public List<InternshipOpportunity> findByRepresentative(CompanyRepresentative rep) {
+        List<InternshipOpportunity> result = new ArrayList<>();
+        if (rep == null) return result;
+
+        for (InternshipOpportunity opp : opportunities) {
+            CompanyRepresentative creator = opp.getRepInCharge();
+            if (creator != null && creator.getUserId().equalsIgnoreCase(rep.getUserId())) {
+                result.add(opp);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Deletes the provided opportunity instance if it exists.
+     * @return true if the opportunity was removed, false otherwise.
+     */
+    public boolean delete(InternshipOpportunity opp) {
+        if (opp == null) return false;
+        return opportunities.remove(opp);
+    }
     
     /**
-	* Clears the repository (for testing or reset)
-	*/
+     * Clears all stored opportunities (used for testing or system reset).
+     */
     public void clear() {
         opportunities.clear();
     }
