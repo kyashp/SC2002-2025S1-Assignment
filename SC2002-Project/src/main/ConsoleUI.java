@@ -1,6 +1,7 @@
 package main;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,6 +133,22 @@ public class ConsoleUI {
         try {
             User u = auth.loginVerification(uid, pw);
             System.out.println("Welcome, " + u.getUserName() + "!");
+
+            List<String> notifs = NotificationService.getNotifications(u, appRepo, oppRepo, reqRepo);
+            
+            // 2. DISPLAY
+            System.out.println("---------------------------------------");
+            if (notifs.isEmpty()) {
+                System.out.println("Notifications: No Notifications");
+            } else {
+                System.out.println("Notifications:");
+                for (String n : notifs) {
+                    System.out.println(n);
+                }
+            }
+            System.out.println("---------------------------------------");
+
+            u.setLastNotifCheck(LocalDateTime.now());
             if (u instanceof Student s) studentMenu(s);
             else if (u instanceof CompanyRepresentative r) repMenu(r);
             else if (u instanceof CareerCenterStaff c) staffMenu(c);
