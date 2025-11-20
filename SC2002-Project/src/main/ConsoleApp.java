@@ -1,6 +1,7 @@
 package main;
 
 import java.io.File;
+import java.io.FileWriter;
 
 import boundary.*;
 import control.*;
@@ -34,12 +35,16 @@ public class ConsoleApp {
         try {
             File s = new File("sample_student_list.csv");
             File st = new File("sample_staff_list.csv");
-            
+
             if (!s.exists()) s = new File("data/sample_student_list.csv");
             if (!st.exists()) st = new File("data/sample_staff_list.csv");
 
             if (s.exists()) importer.importStudents(s);
             if (st.exists()) importer.importStaff(st);
+
+            FileWriter writer = new FileWriter("data/sample_company_representative_list.csv", false);
+            writer.write("CompanyRepID,Name,CompanyName,Department,Position,Email,Status");
+            writer.close();
 
         } catch (Exception e) {
             System.err.println("CSV import warning: " + e.getMessage());
