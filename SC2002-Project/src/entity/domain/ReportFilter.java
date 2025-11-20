@@ -8,7 +8,7 @@ import entity.domain.enums.OpportunityStatus;
  * Represents filter criteria for generating internship opportunity reports.
  */
 
-public class ReportFilter {
+public class ReportFilter implements ReportFilterCriteria{
 	
 	// Attributes
 	

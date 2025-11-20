@@ -8,7 +8,7 @@ import entity.domain.enums.OpportunityStatus;
  * Per-user filter for browsing internship opportunities.
  * Any null/empty field is treated as "no filter".
  */
-public class OpportunityFilter {
+public class OpportunityFilter implements OpportunityFilterCriteria{
     private OpportunityStatus status;     // PENDING/APPROVED/REJECTED/FILLED
     private String preferredMajor;        // exact match or null for any
     private InternshipLevel level;        // BASIC/INTERMEDIATE/ADVANCED
