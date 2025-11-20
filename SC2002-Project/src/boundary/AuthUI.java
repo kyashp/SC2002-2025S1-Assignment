@@ -206,7 +206,7 @@ public class AuthUI {
             RegistrationRequest req = new RegistrationRequest(rep);
             reqRepo.save(req);
 
-            System.out.println("\nAccount created Successfully. You can now Login.");
+            System.out.println("\nAccount created Successfully. You can Login once your account is approved.");
         } catch (Exception e) {
             System.out.println("\n<<Setup failed: " + e.getMessage() + " >>");
         }
