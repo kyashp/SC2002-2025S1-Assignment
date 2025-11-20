@@ -19,6 +19,9 @@ public class Validator {
     /**
      * Checks if the given ID matches a valid student ID format.
      * Examples: S1234567A, U1234567B, S7654321
+     *
+     * @param id raw student ID to validate
+     * @return {@code true} if the ID matches the student pattern
      */
     public boolean isValidStudentId(String id) {
         if (id == null) return false;
@@ -28,6 +31,9 @@ public class Validator {
     /**
      * Checks if the given ID matches a valid NTU email account.
      * Example: sng001@ntu.edu.sg
+     *
+     * @param id email/ID to validate
+     * @return {@code true} if the string looks like an NTU email
      */
     public boolean isValidNtuId(String id) {
         if (id == null) return false;
@@ -37,6 +43,9 @@ public class Validator {
     /**
      * Checks if the given email looks like a valid company email.
      * Examples: name@company.com, john.doe@abc.sg
+     *
+     * @param email company email to validate
+     * @return {@code true} if the value matches the pattern
      */
     public boolean isValidCompanyEmail(String email) {
         if (email == null) return false;
@@ -45,6 +54,9 @@ public class Validator {
 
     /**
      * Validates that a string is not null or blank.
+     *
+     * @param value string to test
+     * @return {@code true} if the string contains non-whitespace characters
      */
     public boolean isNotBlank(String value) {
         return value != null && !value.trim().isEmpty();

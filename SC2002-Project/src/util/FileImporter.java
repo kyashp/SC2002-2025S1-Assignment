@@ -15,6 +15,11 @@ public class FileImporter {
 
     private final UserRepository userRepository;
 
+    /**
+     * Creates a new importer that auto-saves imported entries to the repository.
+     *
+     * @param userRepository repository to persist imported users into
+     */
     public FileImporter(UserRepository userRepository) {
         this.userRepository = Objects.requireNonNull(userRepository, "UserRepository required");
     }
@@ -22,6 +27,9 @@ public class FileImporter {
     /**
      * Imports student records from a CSV/Excel file.
      * Expected format: userId,name,password,year,major
+     *
+     * @param file CSV source
+     * @return list of imported students
      */
     public List<Student> importStudents(File file) {
         List<Student> students = new ArrayList<>();
@@ -54,6 +62,9 @@ public class FileImporter {
     /**
      * Imports staff records from a CSV/Excel file.
      * Expected format: userId,name,password,department
+     *
+     * @param file CSV source
+     * @return list of imported career center staff
      */
     public List<CareerCenterStaff> importStaff(File file) {
         List<CareerCenterStaff> staffList = new ArrayList<>();
@@ -85,6 +96,9 @@ public class FileImporter {
      * Imports company representative records from a CSV/Excel file.
      * Supports both legacy (userId,name,password,company,dept,position) and new
      * (CompanyRepID,Name,CompanyName,Department,Position,Email,Status) formats.
+     *
+     * @param file CSV source
+     * @return raw tokenized records
      */
     public static List<String []> importCompanyReps(File file) {
         List<String []> reps = new ArrayList<>();
@@ -108,6 +122,13 @@ public class FileImporter {
         return reps;
     }
 
+    /**
+     * Safely retrieves a token from the array, trimming whitespace and handling bounds.
+     *
+     * @param tokens token array
+     * @param index desired index
+     * @return trimmed token or empty string if missing
+     */
     private String safeToken(String[] tokens, int index) {
         if (index < 0 || index >= tokens.length) {
             return "";

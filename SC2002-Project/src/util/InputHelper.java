@@ -13,10 +13,19 @@ public class InputHelper {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final Scanner sc;
 
+    /**
+     * @param sc scanner used for reading console input
+     */
     public InputHelper(Scanner sc) {
         this.sc = sc;
     }
 
+    /**
+     * Reads and parses an integer, re-prompting until valid.
+     *
+     * @param prompt text shown before reading
+     * @return parsed integer
+     */
     public int readInt(String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -29,6 +38,12 @@ public class InputHelper {
         }
     }
 
+    /**
+     * Reads a line of input after displaying the prompt.
+     *
+     * @param prompt text shown before reading
+     * @return trimmed string
+     */
     public String readString(String prompt) {
         System.out.print(prompt);
         return sc.nextLine().trim();
@@ -36,6 +51,10 @@ public class InputHelper {
 
     /**
      * Reads a date in DD/MM/YYYY format, ensuring it is on/after the provided minimum when specified.
+     *
+     * @param label display label for the prompt
+     * @param minDate minimum acceptable date (inclusive), nullable
+     * @return parsed LocalDate
      */
     public LocalDate readDateOnOrAfter(String label, LocalDate minDate) {
         while (true) {
@@ -54,6 +73,11 @@ public class InputHelper {
         }
     }
     
+    /**
+     * Prints a formatted section header.
+     *
+     * @param title header text
+     */
     public void printHeader(String title) {
         String border = "=".repeat(40);
         System.out.println("\n" + border);
