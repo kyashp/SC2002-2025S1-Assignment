@@ -15,8 +15,12 @@ import entity.domain.enums.OpportunityStatus;
 import repositories.*;
 import util.InputHelper;
 
+/**
+ * UI for Career Center Staff interactions (approvals, reports, filtering).
+ */
 public class StaffUI implements UserInterface {
-	private final Scanner sc = new Scanner(System.in);
+
+    private final Scanner sc = new Scanner(System.in);
     private final CareerCenterStaff staff;
     private final UserService userSvc;
     private final OpportunityService oppSvc;
@@ -27,15 +31,29 @@ public class StaffUI implements UserInterface {
     private final OpportunityRepository oppRepo;
     private final ApplicationRepository appRepo;
     private final InputHelper input;
-    
-    // Local state for this session
+
     private final Map<String, OpportunityFilter> userFilters = new HashMap<>();
     private OpportunityFilter getFilterFor(String userId) {
         return userFilters.computeIfAbsent(userId, k -> new OpportunityFilter());
     }
 
-    public StaffUI(CareerCenterStaff staff, OpportunityService oppSvc, UserService userSvc, ApplicationService appSvc, AuthService authSvc,
-                    ReportService reportSvc, RequestRepository reqRepo, OpportunityRepository oppRepo, ApplicationRepository appRepo, InputHelper input) {
+    /**
+     * Creates StaffUI.
+     * @param staff logged-in staff user
+     * @param oppSvc opportunity service
+     * @param userSvc user service
+     * @param appSvc application service
+     * @param authSvc authentication service
+     * @param reportSvc reporting service
+     * @param reqRepo withdrawal/registration request repo
+     * @param oppRepo opportunity repository
+     * @param appRepo application repository
+     * @param input input helper
+     */
+    public StaffUI(CareerCenterStaff staff, OpportunityService oppSvc, UserService userSvc,
+                   ApplicationService appSvc, AuthService authSvc, ReportService reportSvc,
+                   RequestRepository reqRepo, OpportunityRepository oppRepo,
+                   ApplicationRepository appRepo, InputHelper input) {
         this.staff = staff;
         this.oppSvc = oppSvc;
         this.userSvc = userSvc;
@@ -48,6 +66,7 @@ public class StaffUI implements UserInterface {
         this.input = input;
     }
 
+    /** Starts staff menu loop. */
     @Override
     public void start() {
         while (true) {
@@ -56,93 +75,88 @@ public class StaffUI implements UserInterface {
             System.out.println("2) Approve/Reject Opportunities");
             System.out.println("3) Process Withdrawal Requests");
             System.out.println("4) Generate Report");
-            System.out.println("5) Browse opportunities (filtered)"); 
-            System.out.println("6) Set filters / sort");               
+            System.out.println("5) Browse opportunities (filtered)");
+            System.out.println("6) Set filters / sort");
             System.out.println("0) Logout");
 
             int choice = input.readInt("Choice: ");
             switch (choice) {
-	            case 1 -> staffApproveReps();
-	            case 2 -> staffApproveOpps();
-	            case 3 -> staffProcessWithdrawals();
-	            case 4 -> staffGenerateReport();
-	            case 5 -> staffBrowseOppsFiltered();
-	            case 6 -> editFiltersStaff();
-	            case 0 -> {staff.logout(); return;}
-	            default -> System.out.println("Invalid choice.");
+                case 1 -> staffApproveReps();
+                case 2 -> staffApproveOpps();
+                case 3 -> staffProcessWithdrawals();
+                case 4 -> staffGenerateReport();
+                case 5 -> staffBrowseOppsFiltered();
+                case 6 -> editFiltersStaff();
+                case 0 -> { staff.logout(); return; }
+                default -> System.out.println("Invalid choice.");
             }
         }
     }
 
+    /** Approves or rejects rep registrations. */
     private void staffApproveReps() {
-    	List<RegistrationRequest> pending = reqRepo.findPendingRepRegistrations();
+        List<RegistrationRequest> pending = reqRepo.findPendingRepRegistrations();
         if (pending.isEmpty()) { System.out.println("No pending registrations."); return; }
         for (RegistrationRequest rr : pending) {
             System.out.printf("REQ=%s | Rep=%s | Company=%s%n",
                     rr.getId(), rr.getRep().getUserName(), rr.getRep().getCompanyName());
-            System.out.print("Approve? (y=approve / n=reject): ");
+            System.out.print("Approve? (y/n): ");
             boolean ok = sc.nextLine().trim().equalsIgnoreCase("y");
             if (ok) staff.approveCompanyRep(rr); else staff.rejectCompanyRep(rr);
             reqRepo.save(rr);
         }
     }
 
-    
+    /** Approves or rejects pending opportunities. */
     private void staffApproveOpps() {
-    	// 1. Filter the list to get ONLY Pending opportunities
         List<InternshipOpportunity> pendingList = oppRepo.findAll().stream()
                 .filter(o -> o.getStatus() == OpportunityStatus.PENDING)
                 .collect(Collectors.toList());
 
-        // 2. Check if the list is empty
         if (pendingList.isEmpty()) {
             System.out.println("There are no pending opportunities to review.");
             return;
         }
-        for (InternshipOpportunity o : oppRepo.findAll()) {
-            if (o.getStatus() == OpportunityStatus.PENDING) {
-                System.out.printf("OPP=%s | %s | %s%n", o.getId(), o.getTitle(), o.getCompanyName());
-                System.out.print("Approve? (y=approve / n=reject): ");
-                boolean ok = sc.nextLine().trim().equalsIgnoreCase("y");
-                if (ok) staff.approveOpportunity(o); else staff.rejectOpportunity(o);
-                oppRepo.save(o);
-            }
+        for (InternshipOpportunity o : pendingList) {
+            System.out.printf("OPP=%s | %s | %s%n", o.getId(), o.getTitle(), o.getCompanyName());
+            System.out.print("Approve? (y/n): ");
+            boolean ok = sc.nextLine().trim().equalsIgnoreCase("y");
+            if (ok) staff.approveOpportunity(o); else staff.rejectOpportunity(o);
+            oppRepo.save(o);
         }
     }
-    
+
+    /** Processes withdrawal requests. */
     private void staffProcessWithdrawals() {
         List<WithdrawalRequest> pend = reqRepo.findPendingWithdrawals();
         if (pend.isEmpty()) { System.out.println("No pending withdrawals."); return; }
         for (WithdrawalRequest w : pend) {
             System.out.printf("WREQ=%s | Student=%s | App=%s | Reason=%s%n",
-                    w.getId(),
-                    w.getRequestedBy().getUserName(),
-                    w.getApplication().getId(),
-                    w.getReason());
-            System.out.print("Approve? (y=approve / n=reject): ");
+                    w.getId(), w.getRequestedBy().getUserName(),
+                    w.getApplication().getId(), w.getReason());
+            System.out.print("Approve? (y/n): ");
             boolean ok = sc.nextLine().trim().equalsIgnoreCase("y");
             appSvc.processWithdrawal(staff, w, ok);
             reqRepo.save(w);
             appRepo.save(w.getApplication());
         }
     }
-    
+
+    /** Generates a filtered report. */
     private void staffGenerateReport() {
         System.out.print("Filter by company (blank=any): ");
         String company = sc.nextLine().trim();
         System.out.print("Filter by preferred major (blank=any): ");
         String major = sc.nextLine().trim();
-        System.out.print("Filter by level (BASIC/INTERMEDIATE/ADVANCED, blank=any): ");
+        System.out.print("Filter by level (blank=any): ");
         String lvl = sc.nextLine().trim();
-        System.out.print("Filter by status (PENDING/APPROVED/REJECTED/FILLED, blank=any): ");
+        System.out.print("Filter by status (blank=any): ");
         String st = sc.nextLine().trim();
-        OpportunityStatus status = null;
-        if (!st.isBlank()) status = OpportunityStatus.valueOf(st.toUpperCase());
-        InternshipLevel level = null;
-        if (!lvl.isBlank()) level = InternshipLevel.valueOf(lvl.toUpperCase());
+        OpportunityStatus status = st.isBlank() ? null : OpportunityStatus.valueOf(st.toUpperCase());
+        InternshipLevel level = lvl.isBlank() ? null : InternshipLevel.valueOf(lvl.toUpperCase());
 
-        LocalDate openFrom = readOptionalIsoDate("Filter by opening date on/after (YYYY-MM-DD, blank=any): ");
-        LocalDate closeBy = readOptionalIsoDate("Filter by closing date on/before (YYYY-MM-DD, blank=any): ");
+        LocalDate openFrom = readOptionalIsoDate("Filter by opening date (blank=any): ");
+        LocalDate closeBy = readOptionalIsoDate("Filter by closing date (blank=any): ");
 
         ReportFilter filter = new ReportFilter(
                 status,
@@ -152,17 +166,18 @@ public class StaffUI implements UserInterface {
                 openFrom,
                 closeBy
         );
+
         Report r = reportSvc.generate(filter);
         System.out.println("Report generated at: " + r.getGeneratedAt());
         for (ReportRow row : r.getRows()) {
-            System.out.printf(" - [%s] %s | Level=%s | Status=%s | Major=%s | Total=%d | Filled=%d | Remaining=%d%n",
-                    row.getOpportunityId(), row.getTitle(), row.getLevel(), row.getStatus(),
-                    row.getPreferredMajor(), row.getTotalApplications(), row.getFilledSlots(), row.getRemainingSlots());
+            System.out.printf(" - [%s] %s | Level=%s | Status=%s%n",
+                    row.getOpportunityId(), row.getTitle(),
+                    row.getLevel(), row.getStatus());
         }
         System.out.println("Total opportunities: " + r.getTotalOpportunities());
     }
-    
-    
+
+    /** Shows filtered opportunities. */
     private void staffBrowseOppsFiltered() {
         OpportunityFilter f = getFilterFor(staff.getUserId());
         List<InternshipOpportunity> list = oppSvc.listAllFiltered(f);
@@ -171,40 +186,34 @@ public class StaffUI implements UserInterface {
         printOpps(list);
     }
 
+    /** Edits staff filters. */
     private void editFiltersStaff() {
         OpportunityFilter f = getFilterFor(staff.getUserId());
         while (true) {
             System.out.println("\n=== Filters (Staff) ===");
-            System.out.println("1) Status (current: " + f.getStatus() + ")");
-            System.out.println("2) Preferred Major (current: " + f.getPreferredMajor() + ")");
-            System.out.println("3) Level (current: " + f.getLevel() + ")");
-            System.out.println("4) Closing on/before (current: " + f.getClosingBefore() + ")");
-            System.out.println("5) Sort (current: " + f.getSortKey() + ")");
+            System.out.println("1) Status");
+            System.out.println("2) Preferred Major");
+            System.out.println("3) Level");
+            System.out.println("4) Closing on/before");
+            System.out.println("5) Sort");
             System.out.println("6) Clear all");
             System.out.println("0) Back");
             int choice = input.readInt("Choice: ");
             switch (choice) {
                 case 1 -> {
-                    System.out.print("Status or blank: ");
                     String s1 = sc.nextLine().trim();
                     f.setStatus(s1.isBlank() ? null : OpportunityStatus.valueOf(s1.toUpperCase()));
                 }
-                case 2 -> {
-                    System.out.print("Preferred Major (blank=any): ");
-                    f.setPreferredMajor(sc.nextLine().trim());
-                }
+                case 2 -> f.setPreferredMajor(sc.nextLine().trim());
                 case 3 -> {
-                    System.out.print("Level (BASIC/INTERMEDIATE/ADVANCED or blank): ");
                     String lv = sc.nextLine().trim();
                     f.setLevel(lv.isBlank() ? null : InternshipLevel.valueOf(lv.toUpperCase()));
                 }
                 case 4 -> {
-                    System.out.print("Closing on/before (YYYY-MM-DD or blank): ");
                     String d = sc.nextLine().trim();
                     f.setClosingBefore(d.isBlank() ? null : LocalDate.parse(d));
                 }
                 case 5 -> {
-                    System.out.print("Sort: ");
                     String sk = sc.nextLine().trim();
                     if (!sk.isBlank()) f.setSortKey(OpportunityFilter.SortKey.valueOf(sk.toUpperCase()));
                 }
@@ -214,38 +223,45 @@ public class StaffUI implements UserInterface {
                     return;
                 }
                 case 0 -> { return; }
-                default -> System.out.println("Invalid choice.");
             }
         }
     }
 
+    /**
+     * Reads an optional ISO date (blank allowed).
+     * @param prompt text prompt
+     * @return parsed LocalDate or null
+     */
     private LocalDate readOptionalIsoDate(String prompt) {
         while (true) {
             String raw = input.readString(prompt);
-            if (raw.isBlank()) {
-                return null;
-            }
-            try {
-                return LocalDate.parse(raw);
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date. Please use YYYY-MM-DD.");
+            if (raw.isBlank()) return null;
+            try { return LocalDate.parse(raw); }
+            catch (DateTimeParseException e) {
+                System.out.println("Invalid date. Use YYYY-MM-DD.");
             }
         }
     }
-    
+    /**
+     * Prints opportunities list.
+     * @param list list of InternshipOpportunity to print
+     */
     private void printOpps(List<InternshipOpportunity> list) {
         System.out.println("=== Opportunities ===");
         for (InternshipOpportunity o : list) {
-            System.out.printf("ID=%s | %s | %s | Level=%s | Status=%s | Visible=%s | Slots=%d | Window=%s..%s%n",
-                    o.getId(), o.getTitle(), o.getCompanyName(), o.getLevel(), o.getStatus(), o.isVisibility(),
-                    o.getSlots(), o.getOpenDate(), o.getCloseDate());
+            System.out.printf("ID=%s | %s | %s | Level=%s | Status=%s%n",
+                    o.getId(), o.getTitle(), o.getCompanyName(),
+                    o.getLevel(), o.getStatus());
         }
     }
 
+    /**
+     * Prints summary of the provided filter.
+     * @param f the OpportunityFilter to summarize
+     */
     private void printFilterSummary(OpportunityFilter f) {
         if (f == null) return;
-        System.out.println("~ Current filters: "
-                + "Status=" + f.getStatus()
+        System.out.println("~ Current filters: Status=" + f.getStatus()
                 + ", Major=" + f.getPreferredMajor()
                 + ", Level=" + f.getLevel()
                 + ", Close<= " + f.getClosingBefore()
