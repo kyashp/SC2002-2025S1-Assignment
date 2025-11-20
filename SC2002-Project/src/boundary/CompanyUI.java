@@ -81,8 +81,10 @@ public class CompanyUI implements UserInterface {
         int slots = input.readInt("Slots: ");
         String id = ids.newId("O");
         InternshipOpportunity draft = rep.createOpportunity(id, title, desc, lvl, major, slots);
-        draft.setOpenDate(LocalDate.now());
-        draft.setCloseDate(LocalDate.now().plusWeeks(4));
+        LocalDate openDate = LocalDate.now();
+        draft.setOpenDate(openDate);
+        LocalDate closeDate = input.readDateOnOrAfter("Closing Date", openDate);
+        draft.setCloseDate(closeDate);
         oppRepo.save(draft);
         System.out.println("Created with ID " + id + " (status PENDING, visibility OFF). Staff must approve.");
     }
