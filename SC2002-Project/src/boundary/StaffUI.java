@@ -191,31 +191,63 @@ public class StaffUI implements UserInterface {
         OpportunityFilter f = getFilterFor(staff.getUserId());
         while (true) {
             System.out.println("\n=== Filters (Staff) ===");
-            System.out.println("1) Status");
-            System.out.println("2) Preferred Major");
-            System.out.println("3) Level");
-            System.out.println("4) Closing on/before");
-            System.out.println("5) Sort");
+            System.out.println("1) Status (PENDING/APPROVED/REJECTED/FILLED, current: " + f.getStatus() + ")");
+            System.out.println("2) Preferred Major (current: " + f.getPreferredMajor() + ")");
+            System.out.println("3) Level (BASIC/INTERMEDIATE/ADVANCED, current: " + f.getLevel() + ")");
+            System.out.println("4) Closing on/before (current: " + f.getClosingBefore() + ")");
+            System.out.println("5) Sort (TITLE_ASC, CLOSING_DATE_ASC, COMPANY_ASC, LEVEL_ASC, current: " + f.getSortKey() + ")");
             System.out.println("6) Clear all");
             System.out.println("0) Back");
             int choice = input.readInt("Choice: ");
             switch (choice) {
                 case 1 -> {
                     String s1 = sc.nextLine().trim();
-                    f.setStatus(s1.isBlank() ? null : OpportunityStatus.valueOf(s1.toUpperCase()));
+                    if (s1.isBlank()) {
+                        f.setStatus(null);
+                    } else {
+                        try {
+                            f.setStatus(OpportunityStatus.valueOf(s1.toUpperCase()));
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Invalid status. Use PENDING/APPROVED/REJECTED/FILLED or blank.");
+                            continue;
+                        }
+                    }
                 }
                 case 2 -> f.setPreferredMajor(sc.nextLine().trim());
                 case 3 -> {
                     String lv = sc.nextLine().trim();
-                    f.setLevel(lv.isBlank() ? null : InternshipLevel.valueOf(lv.toUpperCase()));
+                    if (lv.isBlank()) {
+                        f.setLevel(null);
+                    } else {
+                        try {
+                            f.setLevel(InternshipLevel.valueOf(lv.toUpperCase()));
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Invalid level. Use BASIC/INTERMEDIATE/ADVANCED or blank.");
+                            continue;
+                        }
+                    }
                 }
                 case 4 -> {
                     String d = sc.nextLine().trim();
-                    f.setClosingBefore(d.isBlank() ? null : LocalDate.parse(d));
+                    if (d.isBlank()) {
+                        f.setClosingBefore(null);
+                    } else {
+                        try {
+                            f.setClosingBefore(LocalDate.parse(d));
+                        } catch (Exception e) {
+                            System.out.println("Invalid date. Use YYYY-MM-DD or blank.");
+                            continue;
+                        }
+                    }
                 }
                 case 5 -> {
                     String sk = sc.nextLine().trim();
-                    if (!sk.isBlank()) f.setSortKey(OpportunityFilter.SortKey.valueOf(sk.toUpperCase()));
+                    if (sk.isBlank()) continue;
+                    try {
+                        f.setSortKey(OpportunityFilter.SortKey.valueOf(sk.toUpperCase()));
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Invalid sort key. Choose TITLE_ASC, CLOSING_DATE_ASC, COMPANY_ASC, LEVEL_ASC.");
+                    }
                 }
                 case 6 -> {
                     userFilters.put(staff.getUserId(), new OpportunityFilter());

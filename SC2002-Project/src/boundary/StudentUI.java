@@ -271,11 +271,11 @@ public class StudentUI implements UserInterface {
 
         while (true) {
             System.out.println("\n=== Filters (Student) ===");
-            System.out.println("1) Status (current: " + f.getStatus() + ")");
+            System.out.println("1) Status (PENDING/APPROVED/REJECTED/FILLED, current: " + f.getStatus() + ")");
             System.out.println("2) Preferred Major (current: " + f.getPreferredMajor() + ")");
-            System.out.println("3) Level (current: " + f.getLevel() + ")");
+            System.out.println("3) Level (BASIC/INTERMEDIATE/ADVANCED, current: " + f.getLevel() + ")");
             System.out.println("4) Closing on/before (current: " + f.getClosingBefore() + ")");
-            System.out.println("5) Sort (TITLE_ASC, CLOSING_DATE_ASC, COMPANY_ASC, LEVEL_ASC)");
+            System.out.println("5) Sort (TITLE_ASC, CLOSING_DATE_ASC, COMPANY_ASC, LEVEL_ASC, current: " + f.getSortKey() + ")");
             System.out.println("6) Clear all");
             System.out.println("0) Back");
 
