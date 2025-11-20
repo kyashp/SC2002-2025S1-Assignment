@@ -34,7 +34,7 @@ public class ConsoleApp {
         try {
             File s = new File("sample_student_list.csv");
             File st = new File("sample_staff_list.csv");
-
+            
             if (!s.exists()) s = new File("data/sample_student_list.csv");
             if (!st.exists()) st = new File("data/sample_staff_list.csv");
 
