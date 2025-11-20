@@ -82,12 +82,11 @@ public class OpportunityRepository {
                     match = false;
                 }
 
-                // (Optional) DateRange filter check if implemented
-                if (filter.getDateRange() != null) {
-                    if (opp.getOpenDate().isBefore(filter.getDateRange().getStart())
-                            || opp.getCloseDate().isAfter(filter.getDateRange().getEnd())) {
-                        match = false;
-                    }
+                if (filter.getOpenDateFrom() != null && opp.getOpenDate().isBefore(filter.getOpenDateFrom())) {
+                    match = false;
+                }
+                if (filter.getCloseDateBy() != null && opp.getCloseDate().isAfter(filter.getCloseDateBy())) {
+                    match = false;
                 }
 
                 if (match) {

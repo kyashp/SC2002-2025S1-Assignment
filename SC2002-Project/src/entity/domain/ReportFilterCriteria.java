@@ -1,5 +1,7 @@
 package entity.domain;
 
+import java.time.LocalDate;
+
 import entity.domain.enums.InternshipLevel;
 import entity.domain.enums.OpportunityStatus;
 
@@ -17,5 +19,7 @@ public interface ReportFilterCriteria {
 
     String getCompany();
 
-    DateRange getDateRange();
+    LocalDate getOpenDateFrom();
+
+    LocalDate getCloseDateBy();
 }

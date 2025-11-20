@@ -1,41 +1,35 @@
 package entity.domain;
 
+import java.time.LocalDate;
+
 import entity.domain.enums.InternshipLevel;
 import entity.domain.enums.OpportunityStatus;
-
 
 /**
  * Represents filter criteria for generating internship opportunity reports.
  */
+public class ReportFilter implements ReportFilterCriteria {
 
-public class ReportFilter implements ReportFilterCriteria{
-	
-	// Attributes
-	
-	private OpportunityStatus status;
-	private String preferredMajor;
-	private InternshipLevel level;
-	private String company;
-	private DateRange dateRange;
-	
-	// Constructors
-	
-	public ReportFilter() {}
-	
-	public ReportFilter(OpportunityStatus status, String preferredMajor, InternshipLevel level,
-            String company, DateRange dateRange) {
-		
-		this.status = status;
-		this.preferredMajor = preferredMajor;
-		this.level = level;
-		this.company = company;
-		this.dateRange = dateRange;
-	}
-	
-	
-	// Getters and Setters
-	
-	public OpportunityStatus getStatus() {
+    private OpportunityStatus status;
+    private String preferredMajor;
+    private InternshipLevel level;
+    private String company;
+    private LocalDate openDateFrom;
+    private LocalDate closeDateBy;
+
+    public ReportFilter() {}
+
+    public ReportFilter(OpportunityStatus status, String preferredMajor, InternshipLevel level,
+                        String company, LocalDate openDateFrom, LocalDate closeDateBy) {
+        this.status = status;
+        this.preferredMajor = preferredMajor;
+        this.level = level;
+        this.company = company;
+        this.openDateFrom = openDateFrom;
+        this.closeDateBy = closeDateBy;
+    }
+
+    public OpportunityStatus getStatus() {
         return status;
     }
 
@@ -67,19 +61,25 @@ public class ReportFilter implements ReportFilterCriteria{
         this.company = company;
     }
 
-    public DateRange getDateRange() {
-        return dateRange;
+    public LocalDate getOpenDateFrom() {
+        return openDateFrom;
     }
 
-    public void setDateRange(DateRange dateRange) {
-        this.dateRange = dateRange;
+    public void setOpenDateFrom(LocalDate openDateFrom) {
+        this.openDateFrom = openDateFrom;
+    }
+
+    public LocalDate getCloseDateBy() {
+        return closeDateBy;
+    }
+
+    public void setCloseDateBy(LocalDate closeDateBy) {
+        this.closeDateBy = closeDateBy;
     }
 
     @Override
     public String toString() {
-        return String.format("ReportFilter[Status=%s, Major=%s, Level=%s, Company=%s, DateRange=%s]",
-                status, preferredMajor, level, company, dateRange);
+        return String.format("ReportFilter[Status=%s, Major=%s, Level=%s, Company=%s, OpenFrom=%s, CloseBy=%s]",
+                status, preferredMajor, level, company, openDateFrom, closeDateBy);
     }
-
-
 }

@@ -1,6 +1,7 @@
 package boundary;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,15 +130,27 @@ public class StaffUI implements UserInterface {
     private void staffGenerateReport() {
         System.out.print("Filter by company (blank=any): ");
         String company = sc.nextLine().trim();
+        System.out.print("Filter by preferred major (blank=any): ");
+        String major = sc.nextLine().trim();
+        System.out.print("Filter by level (BASIC/INTERMEDIATE/ADVANCED, blank=any): ");
+        String lvl = sc.nextLine().trim();
         System.out.print("Filter by status (PENDING/APPROVED/REJECTED/FILLED, blank=any): ");
         String st = sc.nextLine().trim();
         OpportunityStatus status = null;
         if (!st.isBlank()) status = OpportunityStatus.valueOf(st.toUpperCase());
+        InternshipLevel level = null;
+        if (!lvl.isBlank()) level = InternshipLevel.valueOf(lvl.toUpperCase());
+
+        LocalDate openFrom = readOptionalIsoDate("Filter by opening date on/after (YYYY-MM-DD, blank=any): ");
+        LocalDate closeBy = readOptionalIsoDate("Filter by closing date on/before (YYYY-MM-DD, blank=any): ");
 
         ReportFilter filter = new ReportFilter(
-                status, null, null,
+                status,
+                major.isBlank() ? null : major,
+                level,
                 company.isBlank() ? null : company,
-                null // skip date range in CLI for brevity
+                openFrom,
+                closeBy
         );
         Report r = reportSvc.generate(filter);
         System.out.println("Report generated at: " + r.getGeneratedAt());
@@ -202,6 +215,20 @@ public class StaffUI implements UserInterface {
                 }
                 case 0 -> { return; }
                 default -> System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    private LocalDate readOptionalIsoDate(String prompt) {
+        while (true) {
+            String raw = input.readString(prompt);
+            if (raw.isBlank()) {
+                return null;
+            }
+            try {
+                return LocalDate.parse(raw);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date. Please use YYYY-MM-DD.");
             }
         }
     }
