@@ -5,8 +5,10 @@ package entity.domain.enums;
  * company registration or student withdrawal.
  */
 public enum RequestStatus {
-    PENDING,   // Waiting for staff review
-    APPROVED,  // Approved by staff
-    REJECTED   // Rejected by staff
+    /** Waiting for staff review. */
+    PENDING,
+    /** Approved by staff. */
+    APPROVED,
+    /** Rejected by staff. */
+    REJECTED
 }
-

@@ -20,6 +20,18 @@ public class ReportRow {
 	 // ===== Constructors =====
     public ReportRow() {}
 
+    /**
+     * Constructs a fully populated report row.
+     *
+     * @param opportunityId unique opportunity identifier
+     * @param title opportunity title
+     * @param level internship level
+     * @param status opportunity status
+     * @param preferredMajor preferred major text
+     * @param totalApplications total applications received
+     * @param filledSlots count of successful applications
+     * @param remainingSlots remaining slot count
+     */
     public ReportRow(String opportunityId, String title, InternshipLevel level,
                      OpportunityStatus status, String preferredMajor,
                      int totalApplications, int filledSlots, int remainingSlots) {
@@ -34,66 +46,82 @@ public class ReportRow {
     }
 
     // ===== Getters & Setters =====
+    /** @return opportunity ID. */
     public String getOpportunityId() {
         return opportunityId;
     }
 
+    /** @param opportunityId opportunity ID. */
     public void setOpportunityId(String opportunityId) {
         this.opportunityId = opportunityId;
     }
 
+    /** @return opportunity title. */
     public String getTitle() {
         return title;
     }
 
+    /** @param title opportunity title. */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /** @return internship level. */
     public InternshipLevel getLevel() {
         return level;
     }
 
+    /** @param level internship level. */
     public void setLevel(InternshipLevel level) {
         this.level = level;
     }
 
+    /** @return opportunity status. */
     public OpportunityStatus getStatus() {
         return status;
     }
 
+    /** @param status opportunity status. */
     public void setStatus(OpportunityStatus status) {
         this.status = status;
     }
 
+    /** @return preferred major string. */
     public String getPreferredMajor() {
         return preferredMajor;
     }
 
+    /** @param preferredMajor preferred major string. */
     public void setPreferredMajor(String preferredMajor) {
         this.preferredMajor = preferredMajor;
     }
 
+    /** @return total application count. */
     public int getTotalApplications() {
         return totalApplications;
     }
 
+    /** @param totalApplications total application count. */
     public void setTotalApplications(int totalApplications) {
         this.totalApplications = totalApplications;
     }
 
+    /** @return count of filled slots (successful offers). */
     public int getFilledSlots() {
         return filledSlots;
     }
 
+    /** @param filledSlots count of filled slots (successful offers). */
     public void setFilledSlots(int filledSlots) {
         this.filledSlots = filledSlots;
     }
 
+    /** @return remaining slot count. */
     public int getRemainingSlots() {
         return remainingSlots;
     }
 
+    /** @param remainingSlots remaining slot count. */
     public void setRemainingSlots(int remainingSlots) {
         this.remainingSlots = remainingSlots;
     }

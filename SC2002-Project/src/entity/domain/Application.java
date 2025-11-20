@@ -28,6 +28,12 @@ public class Application {
         // Default constructor 
     }
 
+    /**
+     * Constructs an application for the given student and opportunity.
+     *
+     * @param student applicant
+     * @param opportunity opportunity being applied to
+     */
     public Application(Student student, InternshipOpportunity opportunity) {
         this.student = student;
         this.opportunity = opportunity;
@@ -43,47 +49,84 @@ public class Application {
 
     
 
+    /**
+     * @return the student who submitted this application
+     */
     public Student getStudent() {
         return student;
     }
 
+    /**
+     * @param student the student to associate with this application
+     */
     public void setStudent(Student student) {
         this.student = student;
     }
 
+    /**
+     * @return the referenced internship opportunity
+     */
     public InternshipOpportunity getOpportunity() {
         return opportunity;
     }
 
+    /**
+     * @param opportunity the internship opportunity being applied to
+     */
     public void setOpportunity(InternshipOpportunity opportunity) {
         this.opportunity = opportunity;
     }
 
+    /**
+     * @return timestamp when the application was submitted
+     */
     public LocalDateTime getAppliedAt() {
         return appliedAt;
     }
 
+    /**
+     * @param appliedAt timestamp to record for the submission
+     */
     public void setAppliedAt(LocalDateTime appliedAt) {
         this.appliedAt = appliedAt;
     }
 
+    /**
+     * @return current review status
+     */
     public ApplicationStatus getStatus() {
         return status;
     }
 
+    /**
+     * Updates the status and refreshes the {@code lastUpdated} timestamp.
+     *
+     * @param status new application status
+     */
     public void setStatus(ApplicationStatus status) {
         this.status = status;
         this.lastUpdated = LocalDateTime.now();
     }
 
+    /**
+     * @return timestamp of the last status change
+     */
     public LocalDateTime getLastUpdated(){
         return lastUpdated;
     }
 
+    /**
+     * @return {@code true} if a withdrawal has been requested
+     */
     public boolean isWithdrawalRequested() {
         return withdrawalRequested;
     }
 
+    /**
+     * Flags whether a withdrawal has been requested.
+     *
+     * @param withdrawalRequested {@code true} if withdrawal pending
+     */
     public void setWithdrawalRequested(boolean withdrawalRequested) {
         this.withdrawalRequested = withdrawalRequested;
     }

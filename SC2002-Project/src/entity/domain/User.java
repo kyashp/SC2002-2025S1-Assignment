@@ -13,8 +13,10 @@ public abstract class User {
     private LocalDateTime lastNotifCheck;
 
     /**
-     * Contructs a new user object with distinct userId, default password for a new user is "password"
-     * @param userId Unique Id given to every user
+     * Contructs a new user object with distinct userId; default password is "password".
+     *
+     * @param userId unique identifier
+     * @param userName display name
      */
     protected User(String userId, String userName){
         this.userId = userId;
@@ -89,8 +91,9 @@ public abstract class User {
         this.lastNotifCheck = lastNotifCheck;
     }
     /**
-     * Simulates login for a user
-     * @param inputPassword The plaintext input password entered by user
+     * Simulates login for a user by verifying the supplied plaintext password.
+     *
+     * @param inputPassword plaintext password entered by user
      */
     public void login(String inputPassword){
         System.out.println("");
@@ -108,9 +111,7 @@ public abstract class User {
         
     }
 
-    /**
-     * Simulates logout for a user
-     */
+    /** Simulates logout for a user. */
     public void logout(){
         if(this.isLoggedIn){
             this.isLoggedIn = false;

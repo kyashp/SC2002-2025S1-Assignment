@@ -164,6 +164,9 @@ public class InternshipOpportunity {
     /**
      * Allows a student to apply for this opportunity.
      * Creates and stores a new Application.
+     *
+     * @param student student attempting to apply
+     * @return created application or {@code null} if not eligible
      */
     public Application apply(Student student) {
         Objects.requireNonNull(student, "Student required");
@@ -184,6 +187,9 @@ public class InternshipOpportunity {
      * - Must be within open/close date range.
      * - Must match student year eligibility.
      * - Must be visible and approved.
+     *
+     * @param student student to evaluate eligibility for
+     * @return {@code true} if eligible and opportunity is open
      */
     public boolean isOpenFor(Student student) {
         Objects.requireNonNull(student, "Student required");

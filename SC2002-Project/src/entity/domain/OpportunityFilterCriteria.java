@@ -12,13 +12,18 @@ import entity.domain.OpportunityFilter.SortKey;
  */
 public interface OpportunityFilterCriteria {
 
+    /** @return status constraint or null if any status is allowed. */
     OpportunityStatus getStatus();
 
+    /** @return preferred major constraint or null. */
     String getPreferredMajor();
 
+    /** @return internship level constraint or null. */
     InternshipLevel getLevel();
 
+    /** @return closing-date upper bound or null. */
     LocalDate getClosingBefore();
 
+    /** @return desired sorting key. */
     SortKey getSortKey();
 }

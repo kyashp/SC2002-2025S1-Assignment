@@ -143,7 +143,9 @@ public class WithdrawalRequest {
         this.reason = reason;
     }
 
-    /** Approves this withdrawal request. */
+    /**
+     * Approves this withdrawal request and cascades WITHDRAWN status to the application.
+     */
     public void approve() {
         this.status = RequestStatus.APPROVED;
         if (application != null) {
@@ -152,7 +154,9 @@ public class WithdrawalRequest {
         System.out.println("Withdrawal request " + id + " approved.");
     }
 
-    /** Rejects this withdrawal request. */
+    /**
+     * Rejects this withdrawal request, leaving the application unchanged.
+     */
     public void reject() {
         this.status = RequestStatus.REJECTED;
         System.out.println("Withdrawal request " + id + " rejected.");

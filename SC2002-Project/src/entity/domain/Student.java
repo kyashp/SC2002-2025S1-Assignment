@@ -102,8 +102,10 @@ public class Student extends User {
     /**
      * Returns a list of opportunities a student is eligible for.
      * (Stub method — actual filtering is handled by OpportunityService)
+     *
+     * @param allOpps opportunities to inspect
+     * @return list of opportunities for which {@link InternshipOpportunity#isOpenFor(Student)} is true
      */
-    
     public List<InternshipOpportunity> viewEligibleOpportunities(List<InternshipOpportunity> allOpps) {
         List<InternshipOpportunity> eligible = new ArrayList<>();
         for (InternshipOpportunity opp : allOpps) {
@@ -117,6 +119,9 @@ public class Student extends User {
     /**
      * Allows a student to apply for an opportunity.
      * Uses the ApplicationRepository to store the application.
+     *
+     * @param opp opportunity to apply for
+     * @param appRepo repository used to persist the new application
      */
     public void apply(InternshipOpportunity opp, ApplicationRepository appRepo) {
         Objects.requireNonNull(opp, "Opportunity required");
@@ -141,6 +146,9 @@ public class Student extends User {
 
     /**
      * Lists all applications made by this student.
+     *
+     * @param appRepo repository containing applications
+     * @return list of this student's applications
      */
     public List<Application> viewMyApplications(ApplicationRepository appRepo) {
         Objects.requireNonNull(appRepo, "ApplicationRepository required");
@@ -149,6 +157,9 @@ public class Student extends User {
 
     /**
      * Allows the student to accept an offer (successful application).
+     *
+     * @param app application being accepted
+     * @param appRepo repository used to persist the change
      */
     public void accept(Application app, ApplicationRepository appRepo) {
         Objects.requireNonNull(app, "Application required");

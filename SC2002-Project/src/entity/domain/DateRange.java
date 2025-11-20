@@ -19,6 +19,12 @@ public class DateRange {
         // default: empty range
     }
 
+    /**
+     * Constructs a range with the specified start/end dates.
+     *
+     * @param start inclusive start date (nullable)
+     * @param end inclusive end date (nullable, must not precede start)
+     */
     public DateRange(LocalDate start, LocalDate end) {
         if (start != null && end != null && end.isBefore(start)) {
             throw new IllegalArgumentException("End date cannot be before start date.");
@@ -28,18 +34,30 @@ public class DateRange {
     }
 
     // ===== Getters & Setters =====
+    /**
+     * @return inclusive start date (may be null)
+     */
     public LocalDate getStart() {
         return start;
     }
 
+    /**
+     * @param start inclusive start date to assign
+     */
     public void setStart(LocalDate start) {
         this.start = start;
     }
 
+    /**
+     * @return inclusive end date (may be null)
+     */
     public LocalDate getEnd() {
         return end;
     }
 
+    /**
+     * @param end inclusive end date (must not precede start)
+     */
     public void setEnd(LocalDate end) {
         if (start != null && end != null && end.isBefore(start)) {
             throw new IllegalArgumentException("End date cannot be before start date.");
@@ -51,6 +69,9 @@ public class DateRange {
 
     /**
      * Checks if a given date is within this date range (inclusive).
+     *
+     * @param date date to evaluate
+     * @return {@code true} if date is within range
      */
     public boolean contains(LocalDate date) {
         if (date == null) return false;
@@ -61,6 +82,9 @@ public class DateRange {
 
     /**
      * Checks if this range overlaps with another date range.
+     *
+     * @param other another range
+     * @return {@code true} if the date windows overlap
      */
     public boolean overlaps(DateRange other) {
         if (other == null) return false;

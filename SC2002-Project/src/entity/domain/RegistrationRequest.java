@@ -20,6 +20,11 @@ public class RegistrationRequest {
         // Default constructor for flexibility
     }
     
+    /**
+     * Creates a request for the specified representative with default PENDING status.
+     *
+     * @param rep representative seeking approval
+     */
     public RegistrationRequest(CompanyRepresentative rep) {
 
         this.rep = rep;
@@ -32,26 +37,32 @@ public class RegistrationRequest {
         return id;
     }
 
+    /** @return associated representative. */
     public CompanyRepresentative getRep() {
         return rep;
     }
 
+    /** @param rep representative to associate. */
     public void setRep(CompanyRepresentative rep) {
         this.rep = rep;
     }
 
+    /** @return current status. */
     public RequestStatus getStatus() {
         return status;
     }
 
+    /** @param status new status to assign. */
     public void setStatus(RequestStatus status) {
         this.status = status;
     }
 
+    /** @return timestamp when the request was submitted. */
     public LocalDateTime getRequestedAt() {
         return requestedAt;
     }
 
+    /** @param requestedAt submission timestamp to set. */
     public void setRequestedAt(LocalDateTime requestedAt) {
         this.requestedAt = requestedAt;
     }

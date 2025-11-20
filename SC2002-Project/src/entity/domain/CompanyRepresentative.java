@@ -105,13 +105,14 @@ public class CompanyRepresentative extends User{
 
     /**
      * Creates a new internship opportunity in draft (PENDING) state.
+     *
      * @param id Internship id
      * @param title Internship title
      * @param description Internship description
      * @param level Internship level (Basic, Intermediate, Advanced)
      * @param preferredMajor Preferred major (Computer Science)
      * @param slots Number of slots 0<n<=10
-     * @return
+     * @return unsaved draft opportunity ready for additional data
      */
     public InternshipOpportunity createOpportunity(String id, String title, String description, 
     		entity.domain.enums.InternshipLevel level, 
@@ -127,6 +128,9 @@ public class CompanyRepresentative extends User{
     
     /**
      * Returns a list of all opportunities created under this representative's company.
+     *
+     * @param oppRepo repository used for lookup
+     * @return list of opportunities for this company
      */
     public List<InternshipOpportunity> listMyOpportunities(OpportunityRepository oppRepo) {
         Objects.requireNonNull(oppRepo, "OpportunityRepository required");
@@ -135,6 +139,9 @@ public class CompanyRepresentative extends User{
 
     /**
      * Deletes an opportunity if it belongs to this representative.
+     *
+     * @param opportunityId identifier of opportunity to remove
+     * @param oppRepo repository used to perform deletion
      * @return true if deletion succeeded, false otherwise.
      */
     public boolean deleteOpportunity(String opportunityId, OpportunityRepository oppRepo) {
@@ -160,6 +167,7 @@ public class CompanyRepresentative extends User{
     
     /**
      * Toggles visibility of an approved opportunity.
+     *
      * @param opp InternshipOpportunity
      * @param on Visibility (True/False)
      */
@@ -177,6 +185,7 @@ public class CompanyRepresentative extends User{
     
     /**
      * Returns all applications associated with a specific opportunity.
+     *
      * @param opp InternshipOpportunity
      * @param appRepo ApplicationRepository
      * @return List of all applications for an InternshipOpportunity
