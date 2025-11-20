@@ -2,9 +2,11 @@ package main;
 
 import java.io.File;
 
+import boundary.*;
 import control.*;
 import repositories.*;
 import util.*;
+import java.util.Scanner;
 
 /**
  * Bootstraps the system & launches the interactive console UI.
@@ -20,7 +22,8 @@ public class ConsoleApp {
         IdGenerator idGen = new IdGenerator();
         Validator validator = new Validator();
         FileImporter importer = new FileImporter(userRepo);
-
+        InputHelper input = new InputHelper(new Scanner(System.in));
+        
         AuthService authService = new AuthService(userRepo);
         UserService userService = new UserService(userRepo, reqRepo, importer);
         OpportunityService opportunityService = new OpportunityService(oppRepo, validator);
@@ -54,11 +57,40 @@ public class ConsoleApp {
         }*/
 
         // ===== Launch console UI =====
-        ConsoleUI ui = new ConsoleUI(
-                authService, userService, opportunityService, applicationService, reportService,
-                userRepo, oppRepo, appRepo, reqRepo, idGen, validator
-        );
-        ui.start();
-        System.out.println("Goodbye!");
-    }
+        UIFactory uiFactory = new UIFactory(
+                applicationService, 
+                opportunityService, 
+                userService, 
+                reportService,
+                authService,
+                appRepo, 
+                oppRepo, 
+                reqRepo, 
+                input,
+                idGen
+            );
+
+            // B. Create the Auth UI (Handles Login/Register)
+            AuthUI authUI = new AuthUI(
+                authService, 
+                userRepo, 
+                reqRepo,
+                appRepo, 
+                oppRepo,
+                validator, 
+                input
+            );
+
+            // C. Create the Main Console Router
+            ConsoleUI ui = new ConsoleUI(
+                authUI, 
+                uiFactory, 
+                input
+            );
+
+            // ==================================================
+            // 7. LAUNCH
+            // ==================================================
+            ui.start();
+        }
 }

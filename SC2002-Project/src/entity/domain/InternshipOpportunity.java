@@ -194,7 +194,7 @@ public class InternshipOpportunity {
 
         boolean approvedAndVisible = (status == OpportunityStatus.APPROVED && visibility);
         boolean eligibleByYear = (student.getYear() >= 3) || (level == InternshipLevel.BASIC);
-        boolean eligibleByMajor = (student.getMajor().trim().toLowerCase() == this.getPreferredMajor().trim().toLowerCase());
+        boolean eligibleByMajor =  (this.getPreferredMajor().isEmpty()) || (student.getMajor().trim().toLowerCase() == this.getPreferredMajor().trim().toLowerCase());
         return withinDate && approvedAndVisible && eligibleByYear && eligibleByMajor;
     }
 
