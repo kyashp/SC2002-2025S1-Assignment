@@ -122,7 +122,6 @@ public class CompanyRepresentative extends User{
     	
     	opp.setStatus(OpportunityStatus.PENDING);
         opp.setVisibility(false);
-        System.out.println(getUserName() + " created opportunity: " + title);
         return opp;
     }
     
@@ -173,7 +172,7 @@ public class CompanyRepresentative extends User{
         }
 
         opp.setVisibility(on);
-        System.out.println("Visibility for " + opp.getTitle() + " set to " + (on ? "ON" : "OFF"));
+        System.out.println("Visibility for " + opp.getId() + " set to " + (on ? "ON" : "OFF"));
     }
     
     /**

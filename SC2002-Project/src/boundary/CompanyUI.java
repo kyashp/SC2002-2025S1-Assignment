@@ -85,6 +85,7 @@ public class CompanyUI implements UserInterface {
         draft.setOpenDate(openDate);
         LocalDate closeDate = input.readDateOnOrAfter("Closing Date", openDate);
         draft.setCloseDate(closeDate);
+        System.out.println(rep.getUserName() + " created opportunity ID " + id + " (" + title + ")");
         oppRepo.save(draft);
         System.out.println("Created with ID " + id + " (status PENDING, visibility OFF). Staff must approve.");
     }
