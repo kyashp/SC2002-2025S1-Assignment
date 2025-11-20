@@ -284,21 +284,54 @@ public class StudentUI implements UserInterface {
             switch (choice) {
                 case 1 -> {
                     String s1 = input.readString("Enter Status or blank: ");
-                    f.setStatus(s1.isBlank() ? null : OpportunityStatus.valueOf(s1.toUpperCase()));
+                    if (s1.isBlank() || s1.equalsIgnoreCase("blank")) {
+                        f.setStatus(null);
+                    } else {
+                        try {
+                            f.setStatus(OpportunityStatus.valueOf(s1.toUpperCase()));
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Invalid status. Please enter PENDING/APPROVED/REJECTED/FILLED or leave blank.");
+                            continue;
+                        }
+                    }
                 }
                 case 2 -> f.setPreferredMajor(input.readString("Preferred Major (blank=any): "));
                 case 3 -> {
                     String lv = input.readString("Level (BASIC/INTERMEDIATE/ADVANCED or blank): ");
-                    f.setLevel(lv.isBlank() ? null : InternshipLevel.valueOf(lv.toUpperCase()));
+                    if (lv.isBlank() || lv.equalsIgnoreCase("blank")) {
+                        f.setLevel(null);
+                    } else {
+                        try {
+                            f.setLevel(InternshipLevel.valueOf(lv.toUpperCase()));
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Invalid level. Please enter BASIC, INTERMEDIATE, ADVANCED, or leave blank.");
+                            continue;
+                        }
+                    }
                 }
                 case 4 -> {
                     String d = input.readString("Closing on/before (YYYY-MM-DD or blank): ");
-                    f.setClosingBefore(d.isBlank() ? null : LocalDate.parse(d));
+                    if (d.isBlank() || d.equalsIgnoreCase("blank")) {
+                        f.setClosingBefore(null);
+                    } else {
+                        try {
+                            f.setClosingBefore(LocalDate.parse(d));
+                        } catch (Exception e) {
+                            System.out.println("Invalid date. Please use YYYY-MM-DD or leave blank.");
+                            continue;
+                        }
+                    }
                 }
                 case 5 -> {
                     String sk = input.readString("Sort: ");
-                    if (!sk.isBlank())
+                    if (sk.isBlank()) {
+                        continue;
+                    }
+                    try {
                         f.setSortKey(OpportunityFilter.SortKey.valueOf(sk.toUpperCase()));
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Invalid sort key. Choose TITLE_ASC, CLOSING_DATE_ASC, COMPANY_ASC, or LEVEL_ASC.");
+                    }
                 }
                 case 6 -> {
                     userFilters.put(s.getUserId(), new OpportunityFilter());
