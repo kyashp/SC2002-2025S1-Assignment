@@ -34,6 +34,10 @@ public class AuthService {
      * Logs in a user by verifying their ID and password.
      * If successful, marks the user as logged in and returns the User object.
      * Otherwise, returns null.
+     *
+     * @param userId the ID provided during login
+     * @param password the password provided during login
+     * @return the authenticated {@link User}, or {@code null} if authentication fails
      */
 	
 	public User loginVerification(String userId, String password) {
@@ -62,8 +66,9 @@ public class AuthService {
 		return null;
 	}
 		 /**
-	     * Logs out the given user.
-	     * Simply calls the User entity's logout method.
+	     * Logs out the given user by delegating to the User entity's logout method.
+	     *
+	     * @param user the user to log out
 	     */
 		
 		public void logout(User user) {
@@ -79,6 +84,9 @@ public class AuthService {
 	     * Allows a user to change their password.
 	     * Delegates the password update to the User entity
 	     * and then saves the change via the repository.
+	     *
+	     * @param user the logged-in user changing their password
+	     * @param newPwd the new password to set
 	     */
 	    public void changePassword(User user, String newPwd) {
 	        if (user == null) {
@@ -98,7 +106,12 @@ public class AuthService {
 	        userRepository.save(user);
 	    }
 	    
-	 // services/AuthService.java
+	 /**
+	  * Sets up a user's password during first-time login.
+	  *
+	  * @param userId ID of the user whose password is being initialized
+	  * @param newPwd new password to persist
+	  */
 	    public void setupPasswordFirstTime(String userId, String newPwd) {
 	        User u = userRepository.findById(userId);
 	        u.setPassword(newPwd);
@@ -107,7 +120,7 @@ public class AuthService {
 		/**
 		 * Returns if an Id is associated with Student/Staff
 		 * @param uid userId
-		 * @return boolean true/false
+		 * @return {@code true} if the ID belongs to a student or staff, else {@code false}
 		 */
 		public boolean isStudentOrStaff(String uid){
 			User temp = userRepository.findById(uid);
@@ -116,6 +129,18 @@ public class AuthService {
 			}
 			return false;
 		}
+		/**
+		 * Creates a new company representative account and persists it to both in-memory
+		 * storage and the backing CSV file.
+		 *
+		 * @param userId representative email/ID
+		 * @param username representative name
+		 * @param password initial password
+		 * @param companyName company name
+		 * @param department department name
+		 * @param position job position
+		 * @return the created {@link CompanyRepresentative}
+		 */
 		public CompanyRepresentative setupCompanyRepAccount(String userId, String username, String password,String companyName, String department, String position){
 			CompanyRepresentative r = new CompanyRepresentative(userId, username, password, companyName, department, position);
 			userRepository.save(r);

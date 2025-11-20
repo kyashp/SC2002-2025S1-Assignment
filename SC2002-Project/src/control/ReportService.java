@@ -37,8 +37,9 @@ public class ReportService {
      * For each matching opportunity, adds a ReportRow with:
      * - opportunityId, title, level, status, preferredMajor
      * - totalApplications, filledSlots (successful apps), remainingSlots
-     * @param filter ReportFilter
-     * @return Report 
+     *
+     * @param filter report filter settings (null = no filtering)
+     * @return generated {@link Report}
      */
     public Report generate(ReportFilter filter) {
         // 1) Fetch opportunities (approved/visible + filter)
@@ -59,9 +60,10 @@ public class ReportService {
     }
 
     /**
-     * Builds a row for an internship
-     * @param opp InternshipOpportunity
-     * @return ReportRow
+     * Builds a row summarizing the given opportunity and its applications.
+     *
+     * @param opp internship opportunity to summarize
+     * @return populated {@link ReportRow}
      */
     private ReportRow buildRow(InternshipOpportunity opp) {
         int totalApps = applicationRepository.findByOpportunity(opp).size();

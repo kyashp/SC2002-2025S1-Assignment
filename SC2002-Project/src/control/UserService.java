@@ -43,8 +43,12 @@ public class UserService {
 	
 	// ===== API (per UML) =====
 
-    /** Returns the user with the given id, or null if not found. */
-	
+    /**
+     * Returns the user with the given id, or null if not found.
+     *
+     * @param id the user ID to look up
+     * @return matching {@link User} or null if none exists
+     */
 	public User getUserById(String id) {
 		if (id == null || id.isEmpty()) {
 			return null;
@@ -55,8 +59,10 @@ public class UserService {
 	/**
      * Registers a new Company Representative by creating a RegistrationRequest
      * with PENDING status. The rep is saved but not approved yet.
+     *
+     * @param rep the representative being registered
+     * @return the created registration request
      */
-	
 	 public RegistrationRequest registerCompanyRep(CompanyRepresentative rep) {
 	        Objects.requireNonNull(rep, "rep required");
 
@@ -73,7 +79,10 @@ public class UserService {
 	        return req;
 	    }
 
-	 /** Approves a pending Company Rep request and marks the rep as approved*/
+	 /** Approves a pending Company Rep request and marks the rep as approved.
+	  *
+	  * @param req the registration request to approve
+	  */
 	 public void approveCompanyRep(RegistrationRequest req) {
 		 Objects.requireNonNull(req, "request required");
 		 CompanyRepresentative rep = Objects.requireNonNull(req.getRep(),"request missing rep");
@@ -87,7 +96,10 @@ public class UserService {
 		 
 	 }
 	 
-	 /* Rejects a Company Rep Registration request (rep remains unapproved). */
+	 /* Rejects a Company Rep Registration request (rep remains unapproved).
+	  *
+	  * @param req the registration request to reject
+	  */
 	 public void rejectCompanyRep(RegistrationRequest req) {
 		 Objects.requireNonNull(req, "Request Required");
 		 req.setStatus(RequestStatus.REJECTED);
@@ -101,6 +113,8 @@ public class UserService {
 	  *
 	  * Depending on your CSVs, this method may import students, staff, or both.
 	  * If your assignment uses separate files, just call this twice with each file.
+	  *
+	  * @param file CSV file containing users to import
 	  */
 	    
 	  public void loadUsersFromFile(File file) {

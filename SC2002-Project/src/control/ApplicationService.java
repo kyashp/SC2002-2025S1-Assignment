@@ -38,9 +38,14 @@ public class ApplicationService {
 
 	// Core Methods
 	
-	/*
-	 * Allows a student to apply for an internship opportunity.
-	 * Validates eligibility and open/close dates.
+	/**
+	 * Allows a student to apply for an internship opportunity after validating eligibility
+	 * and ensuring the opportunity is open.
+	 *
+	 * @param student the student submitting the application
+	 * @param opp the opportunity to apply for
+	 * @return the newly created {@link Application}
+	 * @throws IllegalStateException if the opportunity is not open for applications
 	 */
 	public Application apply(Student student, InternshipOpportunity opp) {
 		Objects.requireNonNull(student, "Student required");
@@ -67,20 +72,25 @@ public class ApplicationService {
 		return app;
 	}
 
-	/*
-	 * Returns all the applications submitted by a Student.
+	/**
+	 * Returns all applications submitted by the specified student.
+	 *
+	 * @param student the student whose applications should be retrieved
+	 * @return list of applications belonging to the student
 	 */
-	
 	public List<Application> listStudentApplications(Student student){
 		Objects.requireNonNull(student, "Student required");
 		return applicationRepository.findByStudent(student);
 	}
 	
-	/*
-	 * Allows a Company rep to review a student's application.
-	 * Approve = SUCCESSFUL, Reject = UNSUCCESSFUL
+	/**
+	 * Allows a company representative to review a student's application, marking it as
+	 * successful or unsuccessful.
+	 *
+	 * @param rep the representative performing the review
+	 * @param app the application under review
+	 * @param approve {@code true} to approve (SUCCESSFUL), {@code false} to reject (UNSUCCESSFUL)
 	 */
-	
 	public void companyReview(CompanyRepresentative rep, Application app, boolean approve) {
 		Objects.requireNonNull(rep, "Company representative required");
 		Objects.requireNonNull(app, "Application required");
@@ -100,11 +110,13 @@ public class ApplicationService {
 		applicationRepository.save(app);
 	}
 	
-	/*
-	 * Allows a student to accept a successful application
-	 * Updates opportunity slots and sets filled status  if necessary
+	/**
+	 * Allows a student to accept a successful application, decrementing slots and
+	 * updating the opportunity status if filled.
+	 *
+	 * @param app the successful application being accepted
+	 * @throws IllegalStateException if the application is not in SUCCESSFUL status
 	 */
-	
 	public void studentAccept(Application app) {
 		Objects.requireNonNull(app, "Application required");
 		
@@ -127,8 +139,13 @@ public class ApplicationService {
 	
 	
 	
-	/**
+    /**
      * Allows a student to request a withdrawal (before or after acceptance).
+     *
+     * @param student the student requesting withdrawal
+     * @param app the application to withdraw from
+     * @param reason free-form reason supplied by the student
+     * @return the created withdrawal request
      */
     public WithdrawalRequest requestWithdrawal(Student student, Application app, String reason) {
         Objects.requireNonNull(student, "Student required");
@@ -149,8 +166,12 @@ public class ApplicationService {
     }
     
     /**
-     * Allows Career Center Staff to process a withdrawal request.
-     * If approved, reopens a slot in the opportunity.
+     * Allows Career Center Staff to process a withdrawal request, optionally reopening
+     * a slot on approval.
+     *
+     * @param staff the staff member making the decision
+     * @param req the withdrawal request being processed
+     * @param approve {@code true} to approve; {@code false} to reject
      */
     public void processWithdrawal(CareerCenterStaff staff, WithdrawalRequest req, boolean approve) {
         Objects.requireNonNull(staff, "Staff required");

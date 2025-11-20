@@ -31,8 +31,13 @@ public class OpportunityService {
         this.validator = Objects.requireNonNull(validator, "Validator required");
     }
 
-    /* Allows a Company representative to draft a new internship opportunity.
+    /**
+     * Allows a company representative to draft a new internship opportunity.
      * Basic validation checks are applied before saving the draft.
+     *
+     * @param rep the representative creating the draft
+     * @param draft the opportunity draft to persist
+     * @return the saved draft
      */
     public InternshipOpportunity createOpportunity(CompanyRepresentative rep, InternshipOpportunity draft) {
         Objects.requireNonNull(rep, "Company representative required");
@@ -56,7 +61,11 @@ public class OpportunityService {
         return draft;
     }
 
-    /* Submits a drafted opportunity for approval by Career Center Staff. */
+    /**
+     * Submits a drafted opportunity for approval by Career Center Staff.
+     *
+     * @param opp the opportunity to submit
+     */
     public void submitForApproval(InternshipOpportunity opp) {
         Objects.requireNonNull(opp, "Opportunity required");
         if (opp.getStatus() != OpportunityStatus.PENDING) {
@@ -67,7 +76,11 @@ public class OpportunityService {
         System.out.println("Opportunity submitted for approval: " + opp.getTitle());
     }
 
-    /* Approves an opportunity. */
+    /**
+     * Approves an opportunity and persists the updated status.
+     *
+     * @param opp the opportunity to approve
+     */
     public void approve(InternshipOpportunity opp) {
         Objects.requireNonNull(opp, "Opportunity required");
         opp.setStatus(OpportunityStatus.APPROVED);
@@ -75,7 +88,11 @@ public class OpportunityService {
         System.out.println("Opportunity approved: " + opp.getTitle());
     }
 
-    /* Rejects an opportunity. */
+    /**
+     * Rejects an opportunity and persists the updated status.
+     *
+     * @param opp the opportunity to reject
+     */
     public void reject(InternshipOpportunity opp) {
         Objects.requireNonNull(opp, "Opportunity required");
         opp.setStatus(OpportunityStatus.REJECTED);
@@ -83,7 +100,12 @@ public class OpportunityService {
         System.out.println("Opportunity rejected " + opp.getTitle());
     }
 
-    /** Allows Company Representatives to toggle visibility of approved opportunities. */
+    /**
+     * Allows Company Representatives to toggle visibility of approved opportunities.
+     *
+     * @param opp the opportunity whose visibility changes
+     * @param on {@code true} to make visible, {@code false} to hide
+     */
     public void setVisibility(InternshipOpportunity opp, boolean on) {
         Objects.requireNonNull(opp, "Opportunity required");
 
@@ -99,6 +121,9 @@ public class OpportunityService {
     /**
      * STUDENT: Returns visible & approved opportunities open to a given student
      * using DEFAULT alphabetical (title) sorting.
+     *
+     * @param student student to retrieve opportunities for
+     * @return list of eligible opportunities
      */
     public List<InternshipOpportunity> listVisibleFor(Student student) {
         return listVisibleFor(student, null);
@@ -107,6 +132,10 @@ public class OpportunityService {
     /**
      * STUDENT: Returns visible & approved opportunities, applying a user filter + sorting.
      * Null filter means default alphabetical sorting without extra constraints.
+     *
+     * @param student student to retrieve opportunities for
+     * @param filter optional filter/sort configuration
+     * @return list of eligible opportunities
      */
     public List<InternshipOpportunity> listVisibleFor(Student student, OpportunityFilter filter) {
         Objects.requireNonNull(student, "Student required");
@@ -122,7 +151,13 @@ public class OpportunityService {
         return applySort(eligible, filter); // default TITLE_ASC if filter null
     }
 
-    /** REP: list own company opportunities with optional filter + sorting. */
+    /**
+     * REP: list own company opportunities with optional filter + sorting.
+     *
+     * @param company company name to match
+     * @param filter optional filter/sort configuration
+     * @return filtered list of opportunities
+     */
     public List<InternshipOpportunity> listByCompanyFiltered(String company, OpportunityFilter filter) {
         if (company == null || company.isBlank()) return new ArrayList<>();
         List<InternshipOpportunity> base = opportunityRepository.findByCompany(company);
@@ -132,7 +167,12 @@ public class OpportunityService {
         return applySort(out, filter);
     }
 
-    /** STAFF: list all opportunities with optional filter + sorting. */
+    /**
+     * STAFF: list all opportunities with optional filter + sorting.
+     *
+     * @param filter optional filter/sort configuration
+     * @return filtered list of opportunities
+     */
     public List<InternshipOpportunity> listAllFiltered(OpportunityFilter filter) {
         List<InternshipOpportunity> base = opportunityRepository.findAll();
         List<InternshipOpportunity> out = base.stream()
@@ -141,13 +181,22 @@ public class OpportunityService {
         return applySort(out, filter);
     }
 
-    /** Existing method kept (used elsewhere). */
+    /**
+     * Existing method kept (used elsewhere) returning opportunities for a company.
+     *
+     * @param company company name
+     * @return list of opportunities for the company
+     */
     public List<InternshipOpportunity> listByCompany(String company) {
         if (company == null || company.isBlank()) return new ArrayList<>();
         return opportunityRepository.findByCompany(company);
     }
 
-    /** Updates status to FILLED once all slots are occupied. */
+    /**
+     * Updates status to FILLED once all slots are occupied.
+     *
+     * @param opp opportunity to evaluate for filled status
+     */
     public void updateFilledStatus(InternshipOpportunity opp) {
         Objects.requireNonNull(opp, "Opportunity required");
         if (opp.getSlots() <= 0) {

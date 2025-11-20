@@ -9,6 +9,15 @@ import java.util.List;
 
 public class NotificationService{
 
+    /**
+     * Builds a list of notification strings tailored to the given user role.
+     *
+     * @param user the user whose notifications are requested
+     * @param appRepo application repository for fetching application changes
+     * @param oppRepo opportunity repository for opportunity updates
+     * @param reqRepo request repository for registration/withdrawal updates
+     * @return list of user-facing notification strings
+     */
     public static List<String> getNotifications(User user, ApplicationRepository appRepo, OpportunityRepository oppRepo, RequestRepository reqRepo) {
 
         List<String> notes = new ArrayList<>();
