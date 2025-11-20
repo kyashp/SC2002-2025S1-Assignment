@@ -2,6 +2,8 @@ package main;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ import util.*;
  * with default alphabetical sorting by Title.
  */
 public class ConsoleUI {
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final Scanner sc = new Scanner(System.in);
 
     private final AuthService auth;
@@ -373,8 +376,10 @@ public class ConsoleUI {
 
         String id = ids.newId("O");
         InternshipOpportunity draft = rep.createOpportunity(id, title, desc, lvl, major, slots);
-        draft.setOpenDate(LocalDate.now());
-        draft.setCloseDate(LocalDate.now().plusWeeks(4));
+        LocalDate openDate = LocalDate.now();
+        draft.setOpenDate(openDate);
+        LocalDate closeDate = readDateOnOrAfter("Closing Date", openDate);
+        draft.setCloseDate(closeDate);
         oppRepo.save(draft);
         System.out.println("Created with ID " + id + " (status PENDING, visibility OFF). Staff must approve.");
     }
@@ -644,6 +649,23 @@ public class ConsoleUI {
             String s = sc.nextLine().trim();
             try { return Integer.parseInt(s); }
             catch (Exception e) { System.out.print("Enter a number: "); }
+        }
+    }
+    
+    private LocalDate readDateOnOrAfter(String label, LocalDate minDate) {
+        while (true) {
+            System.out.print(label + " (DD/MM/YYYY): ");
+            String input = sc.nextLine().trim();
+            try {
+                LocalDate parsed = LocalDate.parse(input, DATE_FORMAT);
+                if (minDate != null && parsed.isBefore(minDate)) {
+                    System.out.printf("Date must be on or after %s.%n", minDate.format(DATE_FORMAT));
+                    continue;
+                }
+                return parsed;
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date. Please use DD/MM/YYYY.");
+            }
         }
     }
 
