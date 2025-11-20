@@ -13,7 +13,6 @@ import entity.domain.enums.InternshipLevel;
 import entity.domain.enums.OpportunityStatus;
 import repositories.*;
 import util.InputHelper;
-import java.util.Scanner;
 
 public class StudentUI implements UserInterface {
     private final Student student;
@@ -158,7 +157,6 @@ public class StudentUI implements UserInterface {
     }
     
     private void editFiltersStudent(Student s) {
-    	Scanner sc = new Scanner(System.in);        
     	OpportunityFilter f = getFilterFor(s.getUserId());
         while (true) {
             System.out.println("\n=== Filters (Student) ===");
@@ -172,27 +170,22 @@ public class StudentUI implements UserInterface {
             int choice = input.readInt("Choice: ");
             switch (choice) {
                 case 1 -> {
-                    System.out.print("Enter Status or blank: ");
-                    String s1 = sc.nextLine().trim();
+                    String s1 = input.readString("Enter Status or blank: ");
                     f.setStatus(s1.isBlank() ? null : OpportunityStatus.valueOf(s1.toUpperCase()));
                 }
                 case 2 -> {
-                    System.out.print("Preferred Major (blank=any): ");
-                    f.setPreferredMajor(sc.nextLine().trim());
+                    f.setPreferredMajor(input.readString("Preferred Major (blank=any): "));
                 }
                 case 3 -> {
-                    System.out.print("Level (BASIC/INTERMEDIATE/ADVANCED or blank): ");
-                    String lv = sc.nextLine().trim();
+                    String lv = input.readString("Level (BASIC/INTERMEDIATE/ADVANCED or blank): ");
                     f.setLevel(lv.isBlank() ? null : InternshipLevel.valueOf(lv.toUpperCase()));
                 }
                 case 4 -> {
-                    System.out.print("Closing on/before (YYYY-MM-DD or blank): ");
-                    String d = sc.nextLine().trim();
+                    String d = input.readString("Closing on/before (YYYY-MM-DD or blank): ");
                     f.setClosingBefore(d.isBlank() ? null : LocalDate.parse(d));
                 }
                 case 5 -> {
-                    System.out.print("Sort: ");
-                    String sk = sc.nextLine().trim();
+                    String sk = input.readString("Sort: ");
                     if (!sk.isBlank()) f.setSortKey(OpportunityFilter.SortKey.valueOf(sk.toUpperCase()));
                 }
                 case 6 -> {
@@ -200,7 +193,7 @@ public class StudentUI implements UserInterface {
                     System.out.println("Filters cleared.");
                     return;
                 }
-                case 0 -> { sc.close(); return; }
+                case 0 -> { return; }
                 default -> System.out.println("Invalid choice.");
             }
         }
