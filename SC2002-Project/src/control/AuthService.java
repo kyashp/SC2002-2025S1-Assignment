@@ -19,7 +19,6 @@ import util.CSVFileWriter;
 
 
 public class AuthService {
-	// HI
 	//Attributes
 	private UserRepository userRepository;
 	
@@ -121,7 +120,7 @@ public class AuthService {
 			CompanyRepresentative r = new CompanyRepresentative(userId, username, password, companyName, department, position);
 			userRepository.save(r);
 			String message = CSVFileWriter.repToWriteString(r);
-			CSVFileWriter.writeToFile("data/sample_company_representative_list.csv", message);
+			CSVFileWriter.writeToFile("data/sample_company_representative_list.csv", message); //change this depending on your file path
 			return r;
 		}
 }

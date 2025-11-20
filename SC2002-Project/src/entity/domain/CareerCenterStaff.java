@@ -50,7 +50,7 @@ public class CareerCenterStaff extends User {
         Objects.requireNonNull(req, "RegistrationRequest required");
         req.setStatus(RequestStatus.APPROVED);
         req.getRep().setApproved(RequestStatus.APPROVED);
-        CSVFileWriter.writeRepStatus("data/sample_company_representative_list.csv", req.getRep().getUserId(), RequestStatus.APPROVED.toString());
+        CSVFileWriter.writeRepStatus("data/sample_company_representative_list.csv", req.getRep().getUserId(), RequestStatus.APPROVED.toString()); // change this depending on your file path
         System.out.println("Approved company representative: " + req.getRep().getUserName());
     }
 

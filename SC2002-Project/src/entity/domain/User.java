@@ -114,10 +114,7 @@ public abstract class User {
     public void logout(){
         if(this.isLoggedIn){
             this.isLoggedIn = false;
-            System.out.println(userName + " logged out.");
-        } else {
-            System.out.println("User is already logged out.");
-        }
+        } 
     }
     
 }
