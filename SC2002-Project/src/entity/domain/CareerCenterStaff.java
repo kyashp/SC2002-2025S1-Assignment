@@ -95,7 +95,7 @@ public class CareerCenterStaff extends User {
         Objects.requireNonNull(req, "WithdrawalRequest required");
         if (approve) {
             req.setStatus(RequestStatus.APPROVED);
-            req.getApplication().setStatus(entity.domain.enums.ApplicationStatus.UNSUCCESSFUL);
+            req.getApplication().setStatus(entity.domain.enums.ApplicationStatus.WITHDRAWN);
             System.out.println("Approved withdrawal request for student: " + req.getRequestedBy().getUserName());
         } else {
             req.setStatus(RequestStatus.REJECTED);

@@ -161,7 +161,7 @@ public class ApplicationService {
 
         if (approve) {
             req.setStatus(RequestStatus.APPROVED);
-            app.setStatus(ApplicationStatus.UNSUCCESSFUL);
+            app.setStatus(ApplicationStatus.WITHDRAWN);
             opp.setSlots(opp.getSlots() + 1);
 
             if (opp.getStatus() == OpportunityStatus.FILLED && opp.getSlots() > 0) {
