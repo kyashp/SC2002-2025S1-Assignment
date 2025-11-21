@@ -14,6 +14,8 @@ import entity.domain.enums.InternshipLevel;
 import entity.domain.enums.OpportunityStatus;
 import repositories.*;
 import util.InputHelper;
+import util.FileImporter;
+import util.DataReloader;
 
 /**
  * UI for Career Center Staff interactions (approvals, reports, filtering).
@@ -30,6 +32,8 @@ public class StaffUI implements UserInterface {
     private final RequestRepository reqRepo;
     private final OpportunityRepository oppRepo;
     private final ApplicationRepository appRepo;
+    private final UserRepository userRepo;
+    private final FileImporter importer;
     private final InputHelper input;
 
     private final Map<String, OpportunityFilter> userFilters = new HashMap<>();
@@ -53,7 +57,8 @@ public class StaffUI implements UserInterface {
     public StaffUI(CareerCenterStaff staff, OpportunityService oppSvc, UserService userSvc,
                    ApplicationService appSvc, AuthService authSvc, ReportService reportSvc,
                    RequestRepository reqRepo, OpportunityRepository oppRepo,
-                   ApplicationRepository appRepo, InputHelper input) {
+                   ApplicationRepository appRepo, UserRepository userRepo,
+                   FileImporter importer, InputHelper input) {
         this.staff = staff;
         this.oppSvc = oppSvc;
         this.userSvc = userSvc;
@@ -63,6 +68,8 @@ public class StaffUI implements UserInterface {
         this.reqRepo = reqRepo;
         this.oppRepo = oppRepo;
         this.appRepo = appRepo;
+        this.userRepo = userRepo;
+        this.importer = importer;
         this.input = input;
     }
 
@@ -70,6 +77,7 @@ public class StaffUI implements UserInterface {
     @Override
     public void start() {
         while (true) {
+            DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
             input.printHeader("[Career Center Staff] " + staff.getUserName());
             System.out.println("1) Approve/Reject Company Representatives");
             System.out.println("2) Approve/Reject Opportunities");
@@ -169,12 +177,44 @@ public class StaffUI implements UserInterface {
 
         Report r = reportSvc.generate(filter);
         System.out.println("Report generated at: " + r.getGeneratedAt());
+
+        Map<String, List<ReportRow>> byCompany = new HashMap<>();
         for (ReportRow row : r.getRows()) {
-            System.out.printf(" - [%s] %s | Level=%s | Status=%s%n",
-                    row.getOpportunityId(), row.getTitle(),
-                    row.getLevel(), row.getStatus());
+            String key = row.getCompanyName() == null ? "Unknown Company" : row.getCompanyName();
+            byCompany.computeIfAbsent(key, k -> new java.util.ArrayList<>()).add(row);
         }
-        System.out.println("Total opportunities: " + r.getTotalOpportunities());
+
+        if (r.getRows().isEmpty()) {
+            System.out.println("No opportunities match this filter.");
+            return;
+        }
+
+        int totalOpps = r.getTotalOpportunities();
+        int totalApps = r.getRows().stream().mapToInt(ReportRow::getTotalApplications).sum();
+        int totalFilled = r.getRows().stream().mapToInt(ReportRow::getFilledSlots).sum();
+
+        for (var entry : byCompany.entrySet()) {
+            String comp = entry.getKey();
+            List<ReportRow> rows = entry.getValue();
+            int compApps = rows.stream().mapToInt(ReportRow::getTotalApplications).sum();
+            int compFilled = rows.stream().mapToInt(ReportRow::getFilledSlots).sum();
+            int compSlots = rows.stream().mapToInt(ReportRow::getTotalSlots).sum();
+            System.out.println("\n--- " + comp + " ---");
+            System.out.println("Opportunities: " + rows.size() + " | Applications: " + compApps + " | Filled: " + compFilled + " | Slots: " + compSlots);
+            for (ReportRow row : rows) {
+                System.out.printf(" [%s] %s | Level=%s | Status=%s | Apps=%d | Filled=%d | Remaining=%d/%d%n",
+                        row.getOpportunityId(),
+                        row.getTitle(),
+                        row.getLevel(),
+                        row.getStatus(),
+                        row.getTotalApplications(),
+                        row.getFilledSlots(),
+                        row.getRemainingSlots(),
+                        row.getTotalSlots());
+            }
+        }
+
+        System.out.println("\nTotal opportunities: " + totalOpps + " | Total applications: " + totalApps + " | Total filled: " + totalFilled);
     }
 
     /** Shows filtered opportunities. */

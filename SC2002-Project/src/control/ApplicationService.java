@@ -91,19 +91,30 @@ public class ApplicationService {
 	 * @param app the application under review
 	 * @param approve {@code true} to approve (SUCCESSFUL), {@code false} to reject (UNSUCCESSFUL)
 	 */
-	public void companyReview(CompanyRepresentative rep, Application app, boolean approve) {
-		Objects.requireNonNull(rep, "Company representative required");
-		Objects.requireNonNull(app, "Application required");
-		
-		if (!app.getOpportunity().getRepInCharge().equals(rep)) {
-			throw new IllegalArgumentException("This representative is not assigned to the opportunity.");
-		}
-		
-		if (approve) {
-			app.setStatus(ApplicationStatus.SUCCESSFUL);
-			System.out.println("Application marked as SUCCESSFUL by: " + rep.getCompanyName());
-		} else {
-			app.setStatus(ApplicationStatus.UNSUCCESSFUL);
+    public void companyReview(CompanyRepresentative rep, Application app, boolean approve) {
+        Objects.requireNonNull(rep, "Company representative required");
+        Objects.requireNonNull(app, "Application required");
+        
+        InternshipOpportunity opp = app.getOpportunity();
+        CompanyRepresentative owner = opp.getRepInCharge();
+        boolean sameCompany = opp.getCompanyName() != null &&
+                opp.getCompanyName().equalsIgnoreCase(rep.getCompanyName());
+        if (owner == null && sameCompany) {
+            // re-attach owner if missing after import
+            opp.setRepInCharge(rep);
+            owner = rep;
+        }
+        if (owner != null &&
+                !owner.getUserId().equalsIgnoreCase(rep.getUserId()) &&
+                !sameCompany) {
+            throw new IllegalArgumentException("This representative is not assigned to the opportunity.");
+        }
+        
+        if (approve) {
+            app.setStatus(ApplicationStatus.SUCCESSFUL);
+            System.out.println("Application marked as SUCCESSFUL by: " + rep.getCompanyName());
+        } else {
+            app.setStatus(ApplicationStatus.UNSUCCESSFUL);
 			System.out.println("Application marked as UNSUCCESSFUL by: " + rep.getCompanyName());
 			
 		}

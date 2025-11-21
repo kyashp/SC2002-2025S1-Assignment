@@ -41,6 +41,15 @@ public class IdGenerator {
         return String.format("%s%03d", prefix.toUpperCase(), next);
     }
 
+    /** Seed the counter to continue after existing max (used when importing). */
+    public void seedPrefix(String prefix, int currentMax) {
+        if (prefix == null || prefix.isBlank()) {
+            return;
+        }
+        AtomicInteger counter = counters.computeIfAbsent(prefix, p -> new AtomicInteger(0));
+        counter.updateAndGet(existing -> Math.max(existing, currentMax));
+    }
+
     /**
      * Resets all ID counters (useful for testing or re-initializing the system).
      */

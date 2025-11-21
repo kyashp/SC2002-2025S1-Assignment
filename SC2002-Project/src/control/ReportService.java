@@ -68,17 +68,20 @@ public class ReportService {
     private ReportRow buildRow(InternshipOpportunity opp) {
         int totalApps = applicationRepository.findByOpportunity(opp).size();
         int filledSlots = applicationRepository.countSuccessfulByOpportunity(opp);
-        int remaining = Math.max(0, opp.getSlots() - filledSlots);
+        int remaining = Math.max(0, opp.getSlots()); // repo tracks remaining slots
+        int totalSlots = filledSlots + remaining;
 
         ReportRow row = new ReportRow();
         row.setOpportunityId(opp.getId());
         row.setTitle(opp.getTitle());
+        row.setCompanyName(opp.getCompanyName());
         row.setLevel(opp.getLevel());                     // InternshipLevel
         row.setStatus(opp.getStatus());                   // OpportunityStatus
         row.setPreferredMajor(opp.getPreferredMajor());
         row.setTotalApplications(totalApps);
         row.setFilledSlots(filledSlots);
         row.setRemainingSlots(remaining);
+        row.setTotalSlots(totalSlots);
         return row;
     }
 }

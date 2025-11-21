@@ -13,6 +13,8 @@ import entity.domain.enums.InternshipLevel;
 import entity.domain.enums.OpportunityStatus;
 import repositories.*;
 import util.InputHelper;
+import util.FileImporter;
+import util.DataReloader;
 
 /**
  * Boundary class that exposes the student console menu for toggling visibility,
@@ -31,6 +33,8 @@ public class StudentUI implements UserInterface {
     private final ApplicationRepository appRepo;
     private final OpportunityRepository oppRepo;
     private final RequestRepository reqRepo;
+    private final UserRepository userRepo;
+    private final FileImporter importer;
     private final InputHelper input;
 
     private final Map<String, OpportunityFilter> userFilters = new HashMap<>();
@@ -59,7 +63,7 @@ public class StudentUI implements UserInterface {
      */
     public StudentUI(Student student, ApplicationService appSvc, OpportunityService oppSvc, AuthService authSvc,
                      ApplicationRepository appRepo, OpportunityRepository oppRepo,
-                     RequestRepository reqRepo, InputHelper input) {
+                     RequestRepository reqRepo, UserRepository userRepo, FileImporter importer, InputHelper input) {
 
         this.student = student;
         this.appSvc = appSvc;
@@ -68,6 +72,8 @@ public class StudentUI implements UserInterface {
         this.appRepo = appRepo;
         this.oppRepo = oppRepo;
         this.reqRepo = reqRepo;
+        this.userRepo = userRepo;
+        this.importer = importer;
         this.input = input;
     }
 
@@ -80,6 +86,7 @@ public class StudentUI implements UserInterface {
     @Override
     public void start() {
         while (true) {
+            DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
             input.printHeader("[Student] " + student.getUserName());
             System.out.println("1) Toggle visibility (Current: " + student.getVisibility() + ")");
             System.out.println("2) View visible & eligible opportunities");

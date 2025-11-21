@@ -16,7 +16,7 @@ public class Application {
     // ===== Static shared ID generator ======
     private static final IdGenerator idGen = new IdGenerator();
     // ===== Attributes =====
-    private final String id =  idGen.newId("A");
+    private String id =  idGen.newId("A");
     private Student student;
     private InternshipOpportunity opportunity;
     private LocalDateTime appliedAt;
@@ -45,6 +45,13 @@ public class Application {
     // ===== Getters & Setters =====
     public String getId() {
         return id;
+    }
+
+    /** For importing: set explicit id. */
+    public void setIdForImport(String id) {
+        if (id != null && !id.isBlank()) {
+            this.id = id;
+        }
     }
 
     
@@ -129,6 +136,11 @@ public class Application {
      */
     public void setWithdrawalRequested(boolean withdrawalRequested) {
         this.withdrawalRequested = withdrawalRequested;
+    }
+
+    /** Seed ID counter for imports. */
+    public static void seedIdCounter(int currentMax) {
+        idGen.seedPrefix("A", currentMax);
     }
 
     // ===== Business Logic =====

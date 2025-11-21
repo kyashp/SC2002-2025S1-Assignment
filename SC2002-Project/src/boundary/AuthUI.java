@@ -7,6 +7,7 @@ import control.AuthService;
 import control.NotificationService;
 import entity.domain.*;
 import repositories.*;
+import util.FileImporter;
 import util.InputHelper;
 import util.Validator;
 
@@ -20,6 +21,7 @@ public class AuthUI {
     private final ApplicationRepository appRepo;
     private final OpportunityRepository oppRepo;
     private final Validator validator;
+    private final FileImporter importer;
     private final InputHelper input;
 
     /**
@@ -34,13 +36,14 @@ public class AuthUI {
      */
     public AuthUI(AuthService authSvc, UserRepository userRepo, RequestRepository reqRepo,
                   ApplicationRepository appRepo, OpportunityRepository oppRepo,
-                  Validator validator, InputHelper input) {
+                  Validator validator, FileImporter importer, InputHelper input) {
         this.authSvc = authSvc;
         this.userRepo = userRepo;
         this.reqRepo = reqRepo;
         this.appRepo = appRepo;
         this.oppRepo = oppRepo;
         this.validator = validator;
+        this.importer = importer;
         this.input = input;
     }
 
@@ -49,6 +52,17 @@ public class AuthUI {
      * @return logged-in User or null on failure
      */
     public User handleLogin() {
+        // ensure latest CSV data is loaded each time someone starts login flow
+        try {
+            if (importer != null) importer.importCompanyReps(new java.io.File("data/sample_company_representative_list.csv"), reqRepo);
+            if (oppRepo != null) oppRepo.reloadFromDisk();
+            if (appRepo != null) appRepo.reloadFromDisk();
+            if (reqRepo != null) reqRepo.reloadFromDisk();
+            System.out.println("CSV data refreshed for login.");
+        } catch (Exception e) {
+            System.out.println("CSV refresh failed: " + e.getMessage());
+        }
+
         String uid = input.readString("\nEnter User ID: ");
 
         if (!validator.isValidNtuId(uid) &&
@@ -200,9 +214,7 @@ public class AuthUI {
         } while (!validator.isNotBlank(p1) || !p1.equals(p2));
 
         try {
-            CompanyRepresentative rep = new CompanyRepresentative(email, name, p2, compName, dept, pos);
-            userRepo.save(rep);
-
+            CompanyRepresentative rep = authSvc.setupCompanyRepAccount(email, name, p2, compName, dept, pos);
             RegistrationRequest req = new RegistrationRequest(rep);
             reqRepo.save(req);
 

@@ -10,12 +10,14 @@ import entity.domain.enums.OpportunityStatus;
 public class ReportRow {
 	private String opportunityId;
 	private String title;
+    private String companyName;
 	private InternshipLevel level;
 	private OpportunityStatus status;
 	private String preferredMajor;
 	private int totalApplications;
 	private int filledSlots;
 	private int remainingSlots;
+    private int totalSlots;
 	
 	 // ===== Constructors =====
     public ReportRow() {}
@@ -34,15 +36,17 @@ public class ReportRow {
      */
     public ReportRow(String opportunityId, String title, InternshipLevel level,
                      OpportunityStatus status, String preferredMajor,
-                     int totalApplications, int filledSlots, int remainingSlots) {
+                     int totalApplications, int filledSlots, int remainingSlots, int totalSlots, String companyName) {
         this.opportunityId = opportunityId;
         this.title = title;
+        this.companyName = companyName;
         this.level = level;
         this.status = status;
         this.preferredMajor = preferredMajor;
         this.totalApplications = totalApplications;
         this.filledSlots = filledSlots;
         this.remainingSlots = remainingSlots;
+        this.totalSlots = totalSlots;
     }
 
     // ===== Getters & Setters =====
@@ -65,6 +69,9 @@ public class ReportRow {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public String getCompanyName() { return companyName; }
+    public void setCompanyName(String companyName) { this.companyName = companyName; }
 
     /** @return internship level. */
     public InternshipLevel getLevel() {
@@ -125,6 +132,9 @@ public class ReportRow {
     public void setRemainingSlots(int remainingSlots) {
         this.remainingSlots = remainingSlots;
     }
+
+    public int getTotalSlots() { return totalSlots; }
+    public void setTotalSlots(int totalSlots) { this.totalSlots = totalSlots; }
 
     @Override
     public String toString() {

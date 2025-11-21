@@ -11,6 +11,8 @@ import entity.domain.enums.*;
 import repositories.*;
 import util.IdGenerator;
 import util.InputHelper;
+import util.FileImporter;
+import util.DataReloader;
 import java.util.Scanner;
 
 /**
@@ -24,6 +26,9 @@ public class CompanyUI implements UserInterface {
     private final AuthService authSvc;
     private final OpportunityRepository oppRepo;
     private final ApplicationRepository appRepo;
+    private final RequestRepository reqRepo;
+    private final UserRepository userRepo;
+    private final FileImporter importer;
     private final InputHelper input;
     private final IdGenerator ids;
 
@@ -51,13 +56,17 @@ public class CompanyUI implements UserInterface {
      * @param ids ID generator
      */
     public CompanyUI(CompanyRepresentative rep, OpportunityService oppSvc, ApplicationService appSvc, AuthService authSvc,
-                     OpportunityRepository oppRepo, ApplicationRepository appRepo, InputHelper input, IdGenerator ids) {
+                     OpportunityRepository oppRepo, ApplicationRepository appRepo, RequestRepository reqRepo, UserRepository userRepo,
+                     FileImporter importer, InputHelper input, IdGenerator ids) {
         this.rep = rep;
         this.oppSvc = oppSvc;
         this.appSvc = appSvc;
         this.authSvc = authSvc;
         this.oppRepo = oppRepo;
         this.appRepo = appRepo;
+        this.reqRepo = reqRepo;
+        this.userRepo = userRepo;
+        this.importer = importer;
         this.input = input;
         this.ids = ids;
     }
@@ -70,6 +79,7 @@ public class CompanyUI implements UserInterface {
             return;
         }
         while (true) {
+            DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
             input.printHeader("[Company Representative] " + rep.getCompanyName());
             System.out.println("1) Create opportunity (draft)");
             System.out.println("2) List my opportunities");

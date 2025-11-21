@@ -68,6 +68,12 @@ public abstract class User {
             System.out.println("Hashing function failed!");
         }
     }
+    /**
+     * Sets an already hashed password (used when loading from storage).
+     */
+    public void setPasswordHashed(String hashedPassword) {
+        this.password = hashedPassword;
+    }
 
     /**
      * Sets the login state

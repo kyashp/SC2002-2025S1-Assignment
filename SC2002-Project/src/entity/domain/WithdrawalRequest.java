@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import entity.domain.enums.RequestStatus;
+import util.IdGenerator;
 
 /**
  * Represents a Student's request to withdraw from an internship application.
  */
 public class WithdrawalRequest {
+    private static final IdGenerator idGen = new IdGenerator();
     private String id;
     private Application application;
     private Student requestedBy;
@@ -19,7 +21,12 @@ public class WithdrawalRequest {
     /**
      * Default constructor
      */
-    public WithdrawalRequest(){}
+    public WithdrawalRequest(){
+        this.id = idGen.newId("W");
+        this.status = RequestStatus.PENDING;
+        this.requestedAt = LocalDateTime.now();
+        this.lastUpdated = LocalDateTime.now();
+    }
 
     /**
      * Constructs a WithdrawalRequest object by a Student for Career Center Staff to approve
@@ -52,6 +59,14 @@ public class WithdrawalRequest {
      */
     public void setId(String id) {
         this.id = id;
+    }
+
+    /** For loading from storage: sets id and seeds generator. */
+    public void setIdForImport(String id, int numericMax) {
+        if (id != null && !id.isBlank()) {
+            this.id = id;
+        }
+        idGen.seedPrefix("W", numericMax);
     }
 
     /**
@@ -109,6 +124,10 @@ public class WithdrawalRequest {
      */
     public LocalDateTime getLastUpdated(){
         return this.lastUpdated;
+    }
+    /** For import: set last updated explicitly. */
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     /**

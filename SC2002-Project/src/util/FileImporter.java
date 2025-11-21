@@ -5,7 +5,11 @@ import java.util.*;
 
 import entity.domain.Student;
 import entity.domain.CareerCenterStaff;
+import entity.domain.CompanyRepresentative;
+import entity.domain.RegistrationRequest;
+import entity.domain.enums.RequestStatus;
 import repositories.UserRepository;
+import repositories.RequestRepository;
 
 /**
  * <<Utility>> FileImporter
@@ -110,7 +114,6 @@ public class FileImporter {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             boolean header = true;
-            boolean newFormat = false;
             while ((line = br.readLine()) != null) {
                 if (header) { header = false; continue; }
                 String[] t = line.split("[,\\t]");
@@ -120,6 +123,59 @@ public class FileImporter {
             System.err.println("Error reading company reps file: " + e.getMessage());
         }
         return reps;
+    }
+
+    /**
+     * Imports company representatives from CSV and seeds registration requests/status.
+     * Supports both 7-col and 8-col (with password hash) formats.
+     */
+    public int importCompanyReps(File file, RequestRepository reqRepo) {
+        if (file == null || !file.exists()) {
+            System.out.println("File not found: " + file);
+            return 0;
+        }
+        if (reqRepo != null) {
+            reqRepo.clearRegistrations();
+        }
+        int imported = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            boolean header = true;
+            while ((line = br.readLine()) != null) {
+                if (header) { header = false; continue; }
+                if (line.isBlank()) continue;
+                String[] t = line.split(",", -1);
+                if (t.length < 7) continue;
+                String name = safeToken(t,1);
+                String company = safeToken(t,2);
+                String dept = safeToken(t,3);
+                String pos = safeToken(t,4);
+                String email = safeToken(t,5);
+                String statusText = safeToken(t,6);
+                String passwordHash = t.length >=8 ? safeToken(t,7) : "";
+                CompanyRepresentative rep = new CompanyRepresentative(email, name, "password", company, dept, pos);
+                if (!passwordHash.isBlank()) {
+                    rep.setPasswordHashed(passwordHash);
+                } else {
+                    rep.setPassword("password");
+                }
+                try {
+                    RequestStatus status = RequestStatus.valueOf(statusText);
+                    rep.setApproved(status);
+                } catch (Exception e) {
+                    rep.setApproved(RequestStatus.PENDING);
+                }
+                userRepository.save(rep);
+                if (reqRepo != null && rep.isApproved() == RequestStatus.PENDING) {
+                    reqRepo.save(new RegistrationRequest(rep));
+                }
+                imported++;
+            }
+            System.out.println("Imported " + imported + " company reps from CSV.");
+        } catch (IOException e) {
+            System.err.println("Error reading company reps file: " + e.getMessage());
+        }
+        return imported;
     }
 
     /**

@@ -15,12 +15,11 @@ import java.util.Scanner;
 public class ConsoleApp {
     public static void main(String[] args) {
         // ===== Wiring (DI) =====
-        UserRepository userRepo = new UserRepository();
-        OpportunityRepository oppRepo = new OpportunityRepository();
-        ApplicationRepository appRepo = new ApplicationRepository();
-        RequestRepository reqRepo = new RequestRepository();
-
         IdGenerator idGen = new IdGenerator();
+        UserRepository userRepo = new UserRepository();
+        OpportunityRepository oppRepo = new OpportunityRepository("data/opportunities.csv", userRepo, idGen);
+        ApplicationRepository appRepo = new ApplicationRepository("data/applications.csv", userRepo, oppRepo);
+        RequestRepository reqRepo = new RequestRepository("data/withdrawals.csv", appRepo, userRepo);
         Validator validator = new Validator();
         FileImporter importer = new FileImporter(userRepo);
         InputHelper input = new InputHelper(new Scanner(System.in));
@@ -33,18 +32,27 @@ public class ConsoleApp {
 
         // ===== Optional: load CSVs if present at project root or /data =====
         try {
+            File dataDir = new File("data");
+            if (!dataDir.exists()) dataDir.mkdirs();
             File s = new File("sample_student_list.csv");
             File st = new File("sample_staff_list.csv");
+            File cr = new File("data/sample_company_representative_list.csv");
 
             if (!s.exists()) s = new File("data/sample_student_list.csv");
             if (!st.exists()) st = new File("data/sample_staff_list.csv");
+            if (!cr.exists()) {
+                cr.createNewFile();
+                try (FileWriter w = new FileWriter(cr)) {
+                    w.write("CompanyRepID,Name,CompanyName,Department,Position,Email,Status");
+                }
+            }
 
             if (s.exists()) importer.importStudents(s);
             if (st.exists()) importer.importStaff(st);
-
-            FileWriter writer = new FileWriter("data/sample_company_representative_list.csv", false);
-            writer.write("CompanyRepID,Name,CompanyName,Department,Position,Email,Status");
-            writer.close();
+            if (cr.exists()) importer.importCompanyReps(cr, reqRepo);
+            oppRepo.reloadFromDisk();
+            appRepo.reloadFromDisk();
+            reqRepo.reloadFromDisk();
 
         } catch (Exception e) {
             System.err.println("CSV import warning: " + e.getMessage());
@@ -72,7 +80,9 @@ public class ConsoleApp {
                 oppRepo, 
                 reqRepo, 
                 input,
-                idGen
+                idGen,
+                importer,
+                userRepo
             );
 
             // B. Create the Auth UI (Handles Login/Register)
@@ -83,6 +93,7 @@ public class ConsoleApp {
                 appRepo, 
                 oppRepo,
                 validator, 
+                importer,
                 input
             );
 
