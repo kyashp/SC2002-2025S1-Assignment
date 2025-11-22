@@ -1,0 +1,2 @@
+Id,StudentId,OpportunityId,Status,AppliedAt,WithdrawalRequested
+A001,U2310001A,O001,WITHDRAWN,2025-11-21T23:46:39.281096718,true
