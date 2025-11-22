@@ -117,6 +117,8 @@ public class StaffUI implements UserInterface {
 
     /** Approves or rejects pending opportunities. */
     private void staffApproveOpps() {
+        // Ensure CSV-backed data is refreshed right before listing pending opportunities.
+        DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
         List<InternshipOpportunity> pendingList = oppRepo.findAll().stream()
                 .filter(o -> o.getStatus() == OpportunityStatus.PENDING)
                 .collect(Collectors.toList());
