@@ -44,6 +44,11 @@ public class CompanyUI implements UserInterface {
         return userFilters.computeIfAbsent(userId, k -> new OpportunityFilter());
     }
 
+    /** Reloads all CSV-backed data into memory. */
+    private void reloadData() {
+        DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
+    }
+
     /**
      * Creates a CompanyUI.
      * @param rep logged-in company representative
@@ -79,7 +84,7 @@ public class CompanyUI implements UserInterface {
             return;
         }
         while (true) {
-            DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
+            reloadData();
             input.printHeader("[Company Representative] " + rep.getCompanyName());
             System.out.println("1) Create opportunity (draft)");
             System.out.println("2) List my opportunities");
@@ -104,6 +109,7 @@ public class CompanyUI implements UserInterface {
 
     /** Creates a new opportunity draft. */
     private void repCreateOpp() {
+        reloadData();
         if (!(rep.isApproved() == RequestStatus.APPROVED)) {
             System.out.println("Cannot create until approved.");
             return;
@@ -127,6 +133,7 @@ public class CompanyUI implements UserInterface {
 
     /** Lists this representative's opportunities with filters applied. */
     private void repListOpps() {
+        reloadData();
         OpportunityFilter f = getFilterFor(rep.getUserId());
         List<InternshipOpportunity> list = oppSvc.listByCompanyFiltered(rep.getCompanyName(), f);
         if (list.isEmpty()) {
@@ -139,6 +146,7 @@ public class CompanyUI implements UserInterface {
 
     /** Toggles visibility of a selected opportunity. */
     private void repToggleVisibility() {
+        reloadData();
         List<InternshipOpportunity> list = oppRepo.findByCompany(rep.getCompanyName());
         if (list.isEmpty()) {
             System.out.println("No opportunities.");
@@ -160,6 +168,7 @@ public class CompanyUI implements UserInterface {
 
     /** Reviews applications for a chosen opportunity. */
     private void repReviewApps() {
+        reloadData();
         List<InternshipOpportunity> list = oppRepo.findByCompany(rep.getCompanyName());
         if (list.isEmpty()) {
             System.out.println("No opportunities.");
@@ -200,6 +209,7 @@ public class CompanyUI implements UserInterface {
 
     /** Edits filters used for listing the representative's opportunities. */
     private void editFiltersRep() {
+        reloadData();
         OpportunityFilter f = getFilterFor(rep.getUserId());
         while (true) {
             System.out.println("\n=== Filters (Company Rep) ===");
@@ -281,6 +291,7 @@ public class CompanyUI implements UserInterface {
 
     /** Deletes an opportunity owned by this representative. */
     private void repDeleteOpp() {
+        reloadData();
         List<InternshipOpportunity> list = oppRepo.findByRepresentative(rep);
         if (list.isEmpty()) {
             System.out.println("No opportunities.");
