@@ -85,7 +85,8 @@ public class CompanyUI implements UserInterface {
         }
         while (true) {
             reloadData();
-            input.printHeader("[Company Representative] " + rep.getCompanyName());
+            String display = rep.getUserName() + "@" + rep.getCompanyName();
+            input.printHeader("[Company Representative] " + display);
             System.out.println("1) Create opportunity (draft)");
             System.out.println("2) List my opportunities");
             System.out.println("3) Toggle visibility");
