@@ -49,6 +49,11 @@ public class StudentUI implements UserInterface {
         return userFilters.computeIfAbsent(userId, k -> new OpportunityFilter());
     }
 
+    /** Reload latest CSV-backed data into memory. */
+    private void reloadData() {
+        DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
+    }
+
     /**
      * Constructs a StudentUI instance with all required services and repositories.
      *
@@ -86,7 +91,7 @@ public class StudentUI implements UserInterface {
     @Override
     public void start() {
         while (true) {
-            DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
+            reloadData();
             input.printHeader("[Student] " + student.getUserName());
             System.out.println("1) Toggle visibility (Current: " + student.getVisibility() + ")");
             System.out.println("2) View visible & eligible opportunities");
@@ -101,15 +106,16 @@ public class StudentUI implements UserInterface {
 
             switch (choice) {
                 case 1 -> {
+                    reloadData();
                     student.setVisibility(!student.getVisibility());
                     System.out.println("Visibility set to: " + student.getVisibility());
                 }
-                case 2 -> studentViewEligible();
-                case 3 -> studentApply();
-                case 4 -> studentViewApps();
-                case 5 -> studentAccept();
-                case 6 -> studentRequestWithdrawal();
-                case 7 -> editFiltersStudent(student);
+                case 2 -> { reloadData(); studentViewEligible(); }
+                case 3 -> { reloadData(); studentApply(); }
+                case 4 -> { reloadData(); studentViewApps(); }
+                case 5 -> { reloadData(); studentAccept(); }
+                case 6 -> { reloadData(); studentRequestWithdrawal(); }
+                case 7 -> { reloadData(); editFiltersStudent(student); }
                 case 0 -> {
                     student.logout();
                     return;

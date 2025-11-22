@@ -41,6 +41,11 @@ public class StaffUI implements UserInterface {
         return userFilters.computeIfAbsent(userId, k -> new OpportunityFilter());
     }
 
+    /** Reload latest CSV-backed data into memory. */
+    private void reloadData() {
+        DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
+    }
+
     /**
      * Creates StaffUI.
      * @param staff logged-in staff user
@@ -77,7 +82,7 @@ public class StaffUI implements UserInterface {
     @Override
     public void start() {
         while (true) {
-            DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
+            reloadData();
             input.printHeader("[Career Center Staff] " + staff.getUserName());
             System.out.println("1) Approve/Reject Company Representatives");
             System.out.println("2) Approve/Reject Opportunities");
@@ -89,12 +94,12 @@ public class StaffUI implements UserInterface {
 
             int choice = input.readInt("Choice: ");
             switch (choice) {
-                case 1 -> staffApproveReps();
-                case 2 -> staffApproveOpps();
-                case 3 -> staffProcessWithdrawals();
-                case 4 -> staffGenerateReport();
-                case 5 -> staffBrowseOppsFiltered();
-                case 6 -> editFiltersStaff();
+                case 1 -> { reloadData(); staffApproveReps(); }
+                case 2 -> { reloadData(); staffApproveOpps(); }
+                case 3 -> { reloadData(); staffProcessWithdrawals(); }
+                case 4 -> { reloadData(); staffGenerateReport(); }
+                case 5 -> { reloadData(); staffBrowseOppsFiltered(); }
+                case 6 -> { reloadData(); editFiltersStaff(); }
                 case 0 -> { staff.logout(); return; }
                 default -> System.out.println("Invalid choice.");
             }
@@ -103,6 +108,7 @@ public class StaffUI implements UserInterface {
 
     /** Approves or rejects rep registrations. */
     private void staffApproveReps() {
+        reloadData();
         List<RegistrationRequest> pending = reqRepo.findPendingRepRegistrations();
         if (pending.isEmpty()) { System.out.println("No pending registrations."); return; }
         for (RegistrationRequest rr : pending) {
@@ -117,8 +123,7 @@ public class StaffUI implements UserInterface {
 
     /** Approves or rejects pending opportunities. */
     private void staffApproveOpps() {
-        // Ensure CSV-backed data is refreshed right before listing pending opportunities.
-        DataReloader.reloadAll(importer, userRepo, reqRepo, oppRepo, appRepo);
+        reloadData();
         List<InternshipOpportunity> pendingList = oppRepo.findAll().stream()
                 .filter(o -> o.getStatus() == OpportunityStatus.PENDING)
                 .collect(Collectors.toList());
@@ -138,6 +143,7 @@ public class StaffUI implements UserInterface {
 
     /** Processes withdrawal requests. */
     private void staffProcessWithdrawals() {
+        reloadData();
         List<WithdrawalRequest> pend = reqRepo.findPendingWithdrawals();
         if (pend.isEmpty()) { System.out.println("No pending withdrawals."); return; }
         for (WithdrawalRequest w : pend) {
@@ -154,6 +160,7 @@ public class StaffUI implements UserInterface {
 
     /** Generates a filtered report. */
     private void staffGenerateReport() {
+        reloadData();
         System.out.print("Filter by company (blank=any): ");
         String company = sc.nextLine().trim();
         System.out.print("Filter by preferred major (blank=any): ");
@@ -221,6 +228,7 @@ public class StaffUI implements UserInterface {
 
     /** Shows filtered opportunities. */
     private void staffBrowseOppsFiltered() {
+        reloadData();
         OpportunityFilter f = getFilterFor(staff.getUserId());
         List<InternshipOpportunity> list = oppSvc.listAllFiltered(f);
         if (list.isEmpty()) { System.out.println("No opportunities."); return; }
@@ -230,6 +238,7 @@ public class StaffUI implements UserInterface {
 
     /** Edits staff filters. */
     private void editFiltersStaff() {
+        reloadData();
         OpportunityFilter f = getFilterFor(staff.getUserId());
         while (true) {
             System.out.println("\n=== Filters (Staff) ===");
