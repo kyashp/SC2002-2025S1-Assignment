@@ -134,7 +134,25 @@ public class ApplicationService {
 		if (app.getStatus() != ApplicationStatus.SUCCESSFUL) {
             throw new IllegalStateException("Only successful applications can be accepted.");
         }
-		
+
+        Student student = app.getStudent();
+        // Withdraw all other applications for this student.
+        List<Application> all = applicationRepository.findByStudent(student);
+        for (Application other : all) {
+            if (other.getId().equals(app.getId())) continue;
+            if (other.getStatus() != ApplicationStatus.WITHDRAWN) {
+                other.setStatus(ApplicationStatus.WITHDRAWN);
+                other.setWithdrawalRequested(true);
+                applicationRepository.save(other);
+            }
+        }
+
+        // Mark accepted offer.
+        app.setStatus(ApplicationStatus.ACCEPTED);
+        if (student != null) {
+            student.setAcceptedPlacement(app);
+        }
+
 		InternshipOpportunity opp = app.getOpportunity();
 		opp.setSlots(opp.getSlots() - 1);
 		

@@ -212,7 +212,6 @@ public class RequestRepository {
             if (!loaded.isEmpty()) {
                 new util.IdGenerator().seedPrefix("W", maxId);
             }
-            System.out.println("Imported " + loaded.size() + " withdrawal requests from CSV.");
         } catch (IOException e) {
             System.err.println("Failed to load withdrawals: " + e.getMessage());
         }

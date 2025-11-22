@@ -167,6 +167,7 @@ public class Student extends User {
 
         if (app.getStatus() == ApplicationStatus.SUCCESSFUL) {
             this.acceptedPlacement = app;
+            app.setStatus(ApplicationStatus.ACCEPTED);
             appRepo.save(app);
             System.out.println(getUserName() + " accepted the offer for " + app.getOpportunity().getTitle());
         } else {

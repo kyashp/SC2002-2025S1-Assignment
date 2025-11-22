@@ -171,7 +171,6 @@ public class FileImporter {
                 }
                 imported++;
             }
-            System.out.println("Imported " + imported + " company reps from CSV.");
         } catch (IOException e) {
             System.err.println("Error reading company reps file: " + e.getMessage());
         }

@@ -8,6 +8,8 @@ public enum ApplicationStatus {
     PENDING,
     /** Application approved by company representative. */
     SUCCESSFUL,
+    /** Student accepted the successful offer. */
+    ACCEPTED,
     /** Application rejected during company review. */
     UNSUCCESSFUL,
     /** Application withdrawn by the student. */

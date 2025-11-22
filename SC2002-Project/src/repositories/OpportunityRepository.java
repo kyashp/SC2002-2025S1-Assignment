@@ -239,7 +239,6 @@ public class OpportunityRepository {
             if (idGenerator != null) {
                 idGenerator.seedPrefix("O", maxId);
             }
-            System.out.println("Imported " + loaded.size() + " opportunities from CSV.");
         } catch (IOException e) {
             System.err.println("Failed to load opportunities: " + e.getMessage());
         }

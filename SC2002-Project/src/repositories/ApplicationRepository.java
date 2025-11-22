@@ -105,7 +105,7 @@ public class ApplicationRepository {
         int count = 0;
         for (Application app : applications) {
             if (app.getOpportunity().equals(opp)
-                && app.getStatus() == ApplicationStatus.SUCCESSFUL) {
+                && (app.getStatus() == ApplicationStatus.SUCCESSFUL || app.getStatus() == ApplicationStatus.ACCEPTED)) {
                 count++;
             }
         }
@@ -195,7 +195,6 @@ public class ApplicationRepository {
             applications.clear();
             applications.addAll(loaded);
             Application.seedIdCounter(maxId);
-            System.out.println("Imported " + loaded.size() + " applications from CSV.");
         } catch (IOException e) {
             System.err.println("Failed to load applications: " + e.getMessage());
         }
