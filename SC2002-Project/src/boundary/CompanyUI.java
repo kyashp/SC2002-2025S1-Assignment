@@ -115,6 +115,11 @@ public class CompanyUI implements UserInterface {
             System.out.println("Cannot create until approved.");
             return;
         }
+        List<InternshipOpportunity> existing = oppRepo.findByRepresentative(rep);
+        if (existing.size() >= 5) {
+            System.out.println("Limit reached: You cannot create more than 5 opportunities.");
+            return;
+        }
         String title = input.readString("Title: ");
         String desc = input.readString("Description: ");
         String major = input.readString("Preferred Major (or blank): ");

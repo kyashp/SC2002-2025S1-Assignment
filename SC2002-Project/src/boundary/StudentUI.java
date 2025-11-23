@@ -153,6 +153,20 @@ public class StudentUI implements UserInterface {
         if (!student.getVisibility()) {
             System.out.println("<< You must set Visibility to TRUE to apply. >>");
         }
+        List<Application> existingApps = appRepo.findByStudent(student);
+        int activeCount = 0;
+        for (Application a : existingApps) {
+            // We count applications that are still in progress (not rejected/withdrawn)
+            if (a.getStatus() == ApplicationStatus.PENDING || 
+                a.getStatus() == ApplicationStatus.SUCCESSFUL) {
+                activeCount++;
+            }
+        }
+        
+        if (activeCount >= 3) {
+            System.out.println("Limit reached: You cannot have more than 3 active applications.");
+            return;
+        }
         OpportunityFilter f = getFilterFor(student.getUserId());
         List<InternshipOpportunity> list = oppSvc.listVisibleFor(student, f);
 
