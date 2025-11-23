@@ -10,9 +10,8 @@ import entity.domain.CompanyRepresentative;
 import entity.domain.Student;
 
 /**
- * <<<Repository>> UserRepository
- * Stores and retrieves the User entities such as Student, CompanyRepresentative, and CareerCenterStaff
- * Acts as an in-memory data access layer of the Users in the system
+ * Stores and retrieves User entities such as Student, CompanyRepresentative, and CareerCenterStaff.
+ * Acts as an in-memory data access layer of the Users in the system.
  */
 
 public class UserRepository {

@@ -14,7 +14,6 @@ import repositories.OpportunityRepository;
 
 
 /**
- * <<Service>> ReportService
  * Generates aggregated reports of opportunities and applications.
  */
 public class ReportService {

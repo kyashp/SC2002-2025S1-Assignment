@@ -19,9 +19,8 @@ import entity.domain.Application;
 import entity.domain.User;
 
 /**
- * <<Repository>> RequestRepository
- * Stores and retrieves Requests: Registration and Withdrawal
- * Acts as an in-memory data access layer for requests to Career Center Staff
+ * Stores and retrieves Requests: Registration and Withdrawal.
+ * Acts as an in-memory data access layer for requests to Career Center Staff.
  */
 public class RequestRepository {
 	private final List<RegistrationRequest> registrationRequests = new ArrayList<>();

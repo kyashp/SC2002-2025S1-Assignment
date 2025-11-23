@@ -16,10 +16,8 @@ import repositories.RequestRepository;
 import util.FileImporter;
 
 /**
- * <<service>> UserService
- *  Retrieves users
- *  Manages CompanyRep registration/approval lifecycle
- *  Loads users from file via FileImporter
+ * UserService handles user retrieval, company-rep registration workflow,
+ * and loading users from file via {@link util.FileImporter}.
  */
 
 

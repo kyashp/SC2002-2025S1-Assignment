@@ -17,9 +17,8 @@ import entity.domain.enums.ApplicationStatus;
 import entity.domain.User;
 
 /**
- * <<Repository>> ApplicationRepository
  * Stores and retrieves Application entities.
- * Acts as an in-memory data access layer for the Applications by Students
+ * Acts as an in-memory data access layer for the Applications by Students.
  */
 public class ApplicationRepository {
 

@@ -111,7 +111,7 @@ public class CompanyRepresentative extends User{
      * @param description Internship description
      * @param level Internship level (Basic, Intermediate, Advanced)
      * @param preferredMajor Preferred major (Computer Science)
-     * @param slots Number of slots 0<n<=10
+     * @param slots Number of slots between 1 and 10 inclusive
      * @return unsaved draft opportunity ready for additional data
      */
     public InternshipOpportunity createOpportunity(String id, String title, String description, 

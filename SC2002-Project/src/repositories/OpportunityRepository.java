@@ -20,10 +20,9 @@ import entity.domain.enums.InternshipLevel;
 import util.IdGenerator;
 import entity.domain.User;
 
-/** 
- * <<Repository>> OpportunityRepository
- * Stores and retrieves InternshipOpportunity entities
- * Acts as an in-memory data access layer for all the listed Interns
+/**
+ * Stores and retrieves InternshipOpportunity entities.
+ * Acts as an in-memory data access layer for all the listed Interns.
  */
 public class OpportunityRepository {
 	private final List<InternshipOpportunity> opportunities = new ArrayList<>();
@@ -77,8 +76,8 @@ public class OpportunityRepository {
 	}
 	
 	/**
-     * Finds all approved & visible opportunities that match the given report filter.
-	 * If filter is null, returns all approved & visible opportunities.
+     * Finds all approved and visible opportunities that match the given report filter.
+	 * If filter is null, returns all approved and visible opportunities.
      * @param filter ReportFilter for the filter settings
      * @return List of InternshipOpportunity by the filter
      */

@@ -8,7 +8,6 @@ import util.InputHelper;
 import util.FileImporter;
 
 /**
- * <<Factory>> UIFactory
  * Responsible for creating the correct UI implementation based on the User type.
  */
 public class UIFactory {

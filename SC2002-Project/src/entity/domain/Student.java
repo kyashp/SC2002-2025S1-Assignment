@@ -23,7 +23,6 @@ public class Student extends User {
      * Constructs a new Student object with inputs
      * @param userId Matriculation number: Begins with U, 7 digits and ends with a letter
      * @param userName Student name
-     * @param password Default: password, First time login students will be asked to change
      * @param year Student year of study (1-4)
      * @param major Student major (Computer Science)
      */

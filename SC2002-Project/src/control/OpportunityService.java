@@ -119,7 +119,7 @@ public class OpportunityService {
     }
 
     /**
-     * STUDENT: Returns visible & approved opportunities open to a given student
+     * STUDENT: Returns visible and approved opportunities open to a given student
      * using DEFAULT alphabetical (title) sorting.
      *
      * @param student student to retrieve opportunities for
@@ -130,7 +130,7 @@ public class OpportunityService {
     }
 
     /**
-     * STUDENT: Returns visible & approved opportunities, applying a user filter + sorting.
+     * STUDENT: Returns visible and approved opportunities, applying a user filter + sorting.
      * Null filter means default alphabetical sorting without extra constraints.
      *
      * @param student student to retrieve opportunities for

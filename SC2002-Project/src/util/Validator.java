@@ -3,7 +3,6 @@ package util;
 import java.util.regex.Pattern;
 
 /**
- * <<Utility>> Validator
  * Provides common validation methods for IDs and emails.
  */
 public class Validator {

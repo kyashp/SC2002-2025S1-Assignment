@@ -10,7 +10,7 @@ import util.*;
 import java.util.Scanner;
 
 /**
- * Bootstraps the system & launches the interactive console UI.
+ * Bootstraps the system and launches the interactive console UI.
  */
 public class ConsoleApp {
     public static void main(String[] args) {

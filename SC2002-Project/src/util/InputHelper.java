@@ -6,7 +6,6 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 /**
- * <<Helper>> InputHelper
  * Handles console input/output to prevent code duplication.
  */
 public class InputHelper {

@@ -11,8 +11,6 @@ import util.CSVFileWriter;
  * AuthService is a service (control) class responsible for
  * handling user authentication logic such as login, logout,
  * and password changes.
- *
- * <<service>>
  */
 
 

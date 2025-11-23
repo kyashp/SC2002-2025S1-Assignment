@@ -18,7 +18,6 @@ public class CareerCenterStaff extends User {
      * Constructs a new Career Center Staff with inputs
      * @param userId NTU Account
      * @param username Name of staff
-     * @param password Default: password
      * @param staffDepartment Department (ex. CCDS)
      */
     public CareerCenterStaff(String userId, String username, String staffDepartment) {
