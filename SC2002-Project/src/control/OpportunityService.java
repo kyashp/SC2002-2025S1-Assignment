@@ -16,8 +16,8 @@ import entity.domain.enums.InternshipLevel;
 import repositories.OpportunityRepository;
 import util.Validator;
 
-/* <<service>> OpportunityService
- * Handles the creation, approval, visibility and listing of internship opportunities.
+/**
+ * Handles the creation, approval, visibility, and listing of internship opportunities.
  */
 public class OpportunityService {
 
@@ -26,6 +26,12 @@ public class OpportunityService {
     private final Validator validator;
 
     // ===== Constructor =====
+    /**
+     * Constructs an OpportunityService with its dependencies.
+     *
+     * @param opportunityRepository repository used to persist opportunities
+     * @param validator validation helper for incoming data
+     */
     public OpportunityService(OpportunityRepository opportunityRepository, Validator validator) {
         this.opportunityRepository = Objects.requireNonNull(opportunityRepository, "OpportunityRepository required");
         this.validator = Objects.requireNonNull(validator, "Validator required");

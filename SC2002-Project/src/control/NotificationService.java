@@ -7,7 +7,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Provides role-based notification summaries for students, staff, and company representatives.
+ * This is a stateless utility service; use {@link #getNotifications(User, ApplicationRepository, OpportunityRepository, RequestRepository)}.
+ */
 public class NotificationService{
+
+    /** Utility class; prevent instantiation. */
+    private NotificationService() {}
+
 
     /**
      * Builds a list of notification strings tailored to the given user role.

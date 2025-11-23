@@ -16,9 +16,9 @@ import repositories.ApplicationRepository;
 import repositories.OpportunityRepository;
 import util.Validator;
 
-
-/* <<service>> ApplicationService
- * Handles student applications, company reviews, and withdrawal processing
+/**
+ * Coordinates student applications, company review decisions, and withdrawal handling.
+ * Delegates persistence to {@link ApplicationRepository} and {@link OpportunityRepository}.
  */
 
 public class ApplicationService {
@@ -27,7 +27,13 @@ public class ApplicationService {
 	private final OpportunityRepository opportunityRepository;
 	private final Validator validator;
 
-	
+	/**
+	 * Creates an ApplicationService with its required collaborators.
+	 *
+	 * @param applicationRepository repository for persisting applications
+	 * @param opportunityRepository repository for persisting opportunities
+	 * @param validator utility used for any validation needs
+	 */
 	public ApplicationService(ApplicationRepository applicationRepository,
 			OpportunityRepository opportunityRepository,
 			Validator validator) {
