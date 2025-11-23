@@ -57,7 +57,19 @@ public class ApplicationService {
 		Objects.requireNonNull(student, "Student required");
 		Objects.requireNonNull(opp, "Opportunity required");
 		
-		
+		List<Application> existingApps = applicationRepository.findByStudent(student);
+        int activeCount = 0;
+        for (Application a : existingApps) {
+            // We count applications that are still in progress (not rejected/withdrawn)
+            if (a.getStatus() == ApplicationStatus.PENDING || 
+                a.getStatus() == ApplicationStatus.SUCCESSFUL) {
+                activeCount++;
+            }
+        }
+        
+        if (activeCount >= 3) {
+            throw new IllegalStateException("Limit reached: You cannot have more than 3 active applications.");
+        }
 		if (opp.getStatus() != OpportunityStatus.APPROVED || !opp.isVisibility()) {
 			throw new IllegalStateException("Opportunity is not open for Application.");
 		}

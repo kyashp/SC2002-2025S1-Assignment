@@ -49,6 +49,10 @@ public class OpportunityService {
         Objects.requireNonNull(rep, "Company representative required");
         Objects.requireNonNull(draft, "Opportunity draft required");
 
+        List<InternshipOpportunity> existing = opportunityRepository.findByRepresentative(rep);
+        if (existing.size() >= 5) {
+            throw new IllegalStateException("Limit reached: You cannot create more than 5 opportunities.");
+        }
         // validate mandatory fields
         if (draft.getTitle() == null || draft.getTitle().isBlank()) {
             throw new IllegalArgumentException("Opportunity title cannot be empty.");
