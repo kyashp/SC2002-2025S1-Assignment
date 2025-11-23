@@ -17,45 +17,46 @@ The system allows companies to post internship opportunities, students to apply 
 The project is organized into specific packages separating the UI, business logic, data models, and persistence layers.
 ```
 SC2002-Project/
-├── data/ # CSV files used for data persistence
-│ ├── applications.csv # Records of student applications
-│ ├── opportunities.csv # Details of internship roles
-│ ├── sample_staff_list.csv # Initial staff credentials
-│ ├── sample_student_list.csv # Initial student credentials
-│ ├── withdrawals.csv # Log of withdrawal requests
+├── data/
+│ ├── applications.csv
+│ ├── opportunities.csv
+│ ├── sample_staff_list.csv
+│ ├── sample_student_list.csv
+│ ├── withdrawals.csv
 │ └── ...
 │
+├── doc/ (JavaDocs)
 ├── lib/ # External dependencies
-│ └── jbcrypt-0.4.jar # Library for secure password hashing
+│ └── jbcrypt-0.4.jar
 │
-└── src/ # Source Code
-├── boundary/ # View Layer (User Interface)
-│ ├── ConsoleUI.java # Main menu router
-│ ├── UIFactory.java # Factory to spawn role-specific UIs
-│ └── [Role]UI.java # Specific screens for Student, Staff, etc.
+└── src/
+├── boundary/
+│ ├── ConsoleUI.java
+│ ├── UIFactory.java
+│ └── [Role]UI.java
 │
-├── control/ # Controller Layer (Business Logic)
-│ ├── AuthService.java # Login, logout, and password management
-│ ├── NotificationService.java # Generates alerts for users
-│ ├── ReportService.java # Logic for generating statistical reports
-│ └── [Entity]Service.java # Logic for Applications, Opportunities, etc.
+├── control/
+│ ├── AuthService.java
+│ ├── NotificationService.java
+│ ├── ReportService.java
+│ └── [Entity]Service.java
 │
-├── entity/ # Model Layer
-│ ├── domain/ # Core objects (User, Student, InternshipOpportunity)
-│ └── domain/enums/ # Enumerations (Status, InternshipLevel, etc.)
+├── entity/
+│ ├── domain/
+│ └── domain/enums/
 │
-├── main/ # Entry Point
-│ └── ConsoleApp.java # Bootstraps the application and repositories
+├── main/
+│ └── ConsoleApp.java
 │
-├── repositories/ # Data Access Layer
-│ └── [Entity]Repository.java # Handles CRUD operations and CSV I/O
+├── repositories/
+│ └── [Entity]Repository.java
 │
-└── util/ # Utilities and Helpers
-├── CSVFileWriter.java # Writes data back to CSVs
-├── FileImporter.java # Reads initial data from CSVs
-├── PasswordHasher.java # BCrypt wrapper for security
-├── IdGenerator.java # Generates unique IDs (e.g., U001, O002)
-└── Validator.java # Validates IDs, emails, and inputs
+└── util/
+├── CSVFileWriter.java
+├── FileImporter.java
+├── PasswordHasher.java
+├── IdGenerator.java
+└── Validator.java
 ```
 ## Key Features
 
