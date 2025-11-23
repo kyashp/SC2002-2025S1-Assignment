@@ -3,10 +3,9 @@ package entity.domain;
 import entity.domain.enums.InternshipLevel;
 import entity.domain.enums.OpportunityStatus;
 
-/*
+/**
  * Represents one row in the generated report — summarizing a single internship opportunity.
  */
-
 public class ReportRow {
 	private String opportunityId;
 	private String title;

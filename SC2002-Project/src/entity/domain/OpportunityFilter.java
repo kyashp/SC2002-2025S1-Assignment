@@ -15,6 +15,9 @@ public class OpportunityFilter implements OpportunityFilterCriteria{
     private LocalDate closingBefore;      // show opps with closeDate <= this
     private SortKey sortKey = SortKey.TITLE_ASC;
 
+    /**
+     * Supported sort orders for listing opportunities.
+     */
     public enum SortKey {
         TITLE_ASC,            // default
         CLOSING_DATE_ASC,

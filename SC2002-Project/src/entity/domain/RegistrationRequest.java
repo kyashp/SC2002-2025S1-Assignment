@@ -7,6 +7,10 @@ import java.util.Objects;
 import entity.domain.enums.RequestStatus;
 import util.IdGenerator;
 
+/**
+ * Represents a company representative's request to be approved by staff.
+ * Tracks the representative, current status, and submission timestamp.
+ */
 public class RegistrationRequest {
 	 // ===== Attributes =====
 	private static final IdGenerator idGen = new IdGenerator();
