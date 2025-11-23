@@ -66,7 +66,7 @@ SC2002-Project/
 *   **Accept/Withdraw:** Accept offers or request withdrawal from applications.
 
 ### Company Representative
-*   **Post Internships:** Create draft opportunities (Basic, Intermediate, Advanced levels).
+*   **Post Internships:** Create draft opportunities (Basic, Intermediate, Advanced levels) (Limit: 5 Internships).
 *   **Management:** Edit drafts, delete opportunities, and toggle visibility.
 *   **Candidate Selection:** Review applicants and mark them as *Successful* or *Unsuccessful*.
 
